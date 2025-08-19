@@ -44,15 +44,11 @@
         }
 
         .section-container {
-            padding: 60px 20px;
+            padding: 80px 20px;
             max-width: 1200px;
             margin: 0 auto;
         }
         
-        @media (min-width: 768px) {
-            .section-container { padding: 100px 40px; }
-        }
-
         h2.section-title {
             font-family: var(--font-title);
             font-size: clamp(2.5rem, 8vw, 4rem);
@@ -84,6 +80,7 @@
         button:focus-visible, a:focus-visible {
             outline: 2px solid var(--color-accent);
             outline-offset: 2px;
+            border-radius: 4px;
         }
 
         /* --- Portada (Hero) --- */
@@ -103,8 +100,9 @@
             top: 0; left: 0;
             width: 100%; height: 100%;
             z-index: 1;
-            border-radius: 20px;
+            border-radius: 30px;
             overflow: hidden;
+            transform: scale(1.02); /* Evita bordes finos por el border-radius */
         }
         
         .hero-video-bg {
@@ -146,33 +144,47 @@
         @media (prefers-reduced-motion: reduce) {
             .hero-video-bg { display: none; }
             .hero-video-wrapper {
-                background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('assets/carrusel/DSCF9176.jpg') center/cover;
+                background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('assets/carrusel/imagen1.jpg') center/cover no-repeat;
             }
+        }
+
+        /* --- Texto Descriptivo --- */
+         .description-block {
+            padding: 80px 20px;
+            background: linear-gradient(to right, #000000, #080808, #000000);
+        }
+        .description-text {
+            max-width: 700px;
+            margin: 0 auto;
+            font-size: 1.1rem;
+            line-height: 1.8;
         }
 
         /* --- Carrusel --- */
         .carousel-section {
             position: relative;
             overflow: hidden;
+            padding: 80px 0;
         }
         .carousel-track-container {
             display: flex;
             overflow-x: auto;
             scroll-snap-type: x mandatory;
             -webkit-overflow-scrolling: touch;
-            scrollbar-width: none; /* Firefox */
+            scrollbar-width: none;
+            padding: 0 20px;
+            gap: 20px;
         }
-        .carousel-track-container::-webkit-scrollbar { display: none; } /* Chrome, Safari */
+        .carousel-track-container::-webkit-scrollbar { display: none; }
         
         .carousel-item {
             flex: 0 0 80%;
             width: 80%;
-            height: 60vh;
-            margin-right: 20px;
             scroll-snap-align: center;
             border-radius: 12px;
             overflow: hidden;
             background-color: #111;
+            aspect-ratio: 16 / 10;
         }
         
         @media (min-width: 768px) {
@@ -186,11 +198,10 @@
         .carousel-item video {
             width: 100%; height: 100%;
             object-fit: cover;
+            pointer-events: none;
         }
 
-        .carousel-nav {
-            display: none;
-        }
+        .carousel-nav { display: none; }
 
         @media (min-width: 1024px) {
             .carousel-nav {
@@ -219,7 +230,7 @@
         
         /* --- VANKIFF Video --- */
         .vankiff-video-wrapper {
-            border-radius: 20px;
+            border-radius: 30px;
             overflow: hidden;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             max-width: 1200px;
@@ -283,15 +294,7 @@
 
         /* --- Footer --- */
         .footer { padding: 40px 20px; color: var(--color-subtle-text); font-size: 0.9rem; }
-
-        /* --- Admin Panel --- */
-        #admin-panel { display: none; background-color: #f0f2f5; color: #1c1e21; padding: 20px; text-align: left; }
-        .admin-container { max-width: 800px; margin: 20px auto; }
-        .admin-card { background: #fff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px; padding: 20px; }
-        .admin-card h3 { font-family: var(--font-body); margin-bottom: 15px; }
-        .admin-card textarea, .admin-card input { width: 100%; padding: 8px; border: 1px solid #dddfe2; border-radius: 6px; margin-bottom: 10px; }
-        .admin-card button { background-color: #1877f2; color: #fff; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; }
-
+        
         @media (max-width: 768px) {
             .player-controls { flex-wrap: wrap; justify-content: center; }
             .progress-container { width: 100%; order: -1; margin-bottom: 15px; }
@@ -306,20 +309,26 @@
         <!-- PORTADA -->
         <header class="hero-section">
             <div class="hero-content">
-                <!-- EDITAR TITULO/SUBTITULO DE PORTADA AQUÍ -->
                 <h1 class="hero-title">NUCK</h1>
                 <p class="hero-subtitle">new music</p>
             </div>
             <div class="hero-overlay"></div>
             <div class="hero-video-wrapper">
-                <video autoplay muted loop playsinline class="hero-video-bg" poster="data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=">
+                <video autoplay muted loop playsinline class="hero-video-bg" poster="assets/carrusel/imagen1.jpg">
                     <source src="assets/videos/LOOP PANTALLA PRINCIPAL.mp4" type="video/mp4">
                 </video>
             </div>
         </header>
 
+        <!-- TEXTO DESCRIPTIVO -->
+        <section class="description-block">
+             <p class="description-text">
+                Una estética digital cruda que define un universo propio dentro de la nueva ola underground.
+             </p>
+        </section>
+
         <!-- CARRUSEL -->
-        <section class="section-container carousel-section">
+        <section class="carousel-section">
             <div class="carousel">
                 <div class="carousel-track-container">
                     <!-- Los items se insertan aquí con JS -->
@@ -334,7 +343,7 @@
         <!-- BIO -->
         <section class="section-container bio">
             <h2 class="section-title">BIO</h2>
-            <p class="bio-text" id="bio-text-display">
+            <p class="bio-text">
                 <!-- EDITAR BIO AQUÍ -->
 Nuck es un artista y productor argentino oriundo de Buenos Aires.
 Su sonido se mueve entre trap rage, plugg y cloud rap / sad rap,
@@ -346,7 +355,7 @@ Entre ritmos intensos, atmósferas melancólicas y una estética digital cruda, 
         <!-- VIDEO "VANKIFF FINAL" -->
         <section class="section-container vankiff">
             <div class="vankiff-video-wrapper">
-                <video controls loop muted autoplay playsinline class="vankiff-video">
+                <video loop muted autoplay playsinline class="vankiff-video">
                     <source src="assets/videos/VANKIFF FINAL.mp4" type="video/mp4">
                 </video>
             </div>
@@ -359,7 +368,7 @@ Entre ritmos intensos, atmósferas melancólicas y una estética digital cruda, 
                 <!-- Las subcarpetas se insertan aquí con JS -->
             </div>
             <div class="player-controls">
-                <button id="play-pause-btn" aria-label="Reproducir/Pausar" role="button">▶</button>
+                <button id="play-pause-btn" aria-label="Reproducir" role="button">▶</button>
                 <div class="progress-container">
                     <span id="current-time">0:00</span>
                     <div id="progress-bar" role="slider" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-valuetext="Progreso">
@@ -388,30 +397,6 @@ Entre ritmos intensos, atmósferas melancólicas y una estética digital cruda, 
             <p>&copy; 2025 - NUCK. All rights reserved.</p>
         </footer>
     </main>
-    
-    <!-- PANEL DE ADMINISTRADOR SIMULADO -->
-    <div id="admin-panel">
-         <div class="admin-container section-container">
-            <h2 class="section-title">Panel de Administración</h2>
-            <div class="admin-card">
-                <h3>Editar Título Portada</h3>
-                <input type="text" id="hero-title-editor">
-                <input type="text" id="hero-subtitle-editor">
-                <button id="save-hero-text-btn">Guardar</button>
-            </div>
-            <div class="admin-card">
-                <h3>Editar Biografía</h3>
-                <textarea id="bio-editor"></textarea>
-                <button id="save-bio-btn">Guardar</button>
-            </div>
-             <div class="admin-card">
-                <h3>Gestionar Contenido</h3>
-                <p>Simulación: Aquí podrías agregar/quitar items del carrusel y canciones.</p>
-                <button>Abrir Gestor de Contenido</button>
-            </div>
-            <a href="#" style="color: #1877f2; text-decoration: none;">Volver al sitio</a>
-         </div>
-    </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -420,9 +405,9 @@ Entre ritmos intensos, atmósferas melancólicas y una estética digital cruda, 
             
             // <!-- AGREGAR NUEVOS ÍTEMS DE CARRUSEL AQUÍ -->
             const CAROUSEL_ITEMS = [
-                "DSCF9176.jpg",
+                "imagen1.jpg",
                 "clip 1.mp4",
-                "DSCF9177.jpg",
+                "imagen2.jpg",
                 "clip 2.mp4"
             ];
 
@@ -446,46 +431,36 @@ Entre ritmos intensos, atmósferas melancólicas y una estética digital cruda, 
                 const a = 'àáâäæãåāăąçćčđďèéêëēėęěğǵḧîïíīįìłḿñńǹňôöòóœøōõőṕŕřßśšşșťțûüùúūǘůűųẃẍÿýžźż·/_,:;'
                 const b = 'aaaaaaaaaacccddeeeeeeeegghiiiiiilmnnnnoooooooooprrsssssttuuuuuuuuuwxyyzzz------'
                 const p = new RegExp(a.split('').join('|'), 'g')
-
-                return text.toString().toLowerCase()
-                    .replace(/\s+/g, '-') // Replace spaces with -
-                    .replace(p, c => b.charAt(a.indexOf(c))) // Replace special characters
-                    .replace(/&/g, '-and-') // Replace & with 'and'
-                    .replace(/[^\w\-]+/g, '') // Remove all non-word chars
-                    .replace(/\-\-+/g, '-') // Replace multiple - with single -
-                    .replace(/^-+/, '') // Trim - from start of text
-                    .replace(/-+$/, '') // Trim - from end of text
+                return text.toString().toLowerCase().replace(/\s+/g, '-').replace(p, c => b.charAt(a.indexOf(c))).replace(/&/g, '-and-').replace(/[^\w\-]+/g, '').replace(/\-\-+/g, '-').replace(/^-+/, '').replace(/-+$/, '');
             }
 
             // --- CARRUSEL ---
             const carouselTrackContainer = document.querySelector('.carousel-track-container');
-            const prevBtn = document.getElementById('carousel-prev');
-            const nextBtn = document.getElementById('carousel-next');
-            let slideInterval;
-            
-            function createCarousel() {
-                CAROUSEL_ITEMS.forEach(item => {
+            if (carouselTrackContainer) {
+                const prevBtn = document.getElementById('carousel-prev');
+                const nextBtn = document.getElementById('carousel-next');
+                let slideInterval;
+
+                // Randomize and Create Carousel
+                const randomizedItems = [...CAROUSEL_ITEMS].sort(() => Math.random() - 0.5);
+                randomizedItems.forEach(item => {
                     const itemEl = document.createElement('div');
                     itemEl.className = 'carousel-item';
                     const ext = item.split('.').pop().toLowerCase();
+                    const path = `assets/carrusel/${item}`;
                     if (['jpg', 'jpeg', 'png', 'webp', 'gif'].includes(ext)) {
-                        itemEl.innerHTML = `<img src="assets/carrusel/${item}" alt="" loading="lazy">`;
+                        itemEl.innerHTML = `<img src="${path}" alt="" loading="lazy">`;
                     } else if (['mp4', 'webm'].includes(ext)) {
-                        itemEl.innerHTML = `<video autoplay muted loop playsinline preload="metadata" data-observable="true"><source src="assets/carrusel/${item}" type="video/mp4"></video>`;
+                        itemEl.innerHTML = `<video autoplay muted loop playsinline preload="metadata" data-observable="true"><source src="${path}" type="video/mp4"></video>`;
                     }
                     carouselTrackContainer.appendChild(itemEl);
                 });
-            }
 
-            const startSlideShow = () => slideInterval = setInterval(() => nextBtn.click(), 5000);
-            const stopSlideShow = () => clearInterval(slideInterval);
-            
-            if (carouselTrackContainer) {
-                createCarousel();
-                const scrollAmount = () => carouselTrackContainer.querySelector('.carousel-item').clientWidth + 20;
-
-                nextBtn.addEventListener('click', () => carouselTrackContainer.scrollBy({ left: scrollAmount(), behavior: 'smooth' }));
-                prevBtn.addEventListener('click', () => carouselTrackContainer.scrollBy({ left: -scrollAmount(), behavior: 'smooth' }));
+                const startSlideShow = () => slideInterval = setInterval(() => carouselTrackContainer.scrollBy({ left: carouselTrackContainer.clientWidth, behavior: 'smooth' }), 5000);
+                const stopSlideShow = () => clearInterval(slideInterval);
+                
+                nextBtn.addEventListener('click', () => carouselTrackContainer.scrollBy({ left: carouselTrackContainer.clientWidth, behavior: 'smooth' }));
+                prevBtn.addEventListener('click', () => carouselTrackContainer.scrollBy({ left: -carouselTrackContainer.clientWidth, behavior: 'smooth' }));
                 
                 carouselTrackContainer.parentElement.addEventListener('mouseenter', stopSlideShow);
                 carouselTrackContainer.parentElement.addEventListener('mouseleave', startSlideShow);
@@ -495,11 +470,7 @@ Entre ritmos intensos, atmósferas melancólicas y una estética digital cruda, 
                 const videoObserver = new IntersectionObserver((entries) => {
                     entries.forEach(entry => {
                         const video = entry.target;
-                        if (entry.isIntersecting) {
-                            video.play().catch(() => {});
-                        } else {
-                            video.pause();
-                        }
+                        if (entry.isIntersecting) { video.play().catch(()=>{}); } else { video.pause(); }
                     });
                 }, { threshold: 0.5 });
                 
@@ -519,22 +490,15 @@ Entre ritmos intensos, atmósferas melancólicas y una estética digital cruda, 
             const currentTimeEl = document.getElementById('current-time');
             const totalTimeEl = document.getElementById('total-time');
 
-            function loadTrack(trackInfo) {
-                currentTrack = trackInfo;
-                audio.src = trackInfo.file;
-                updateAllTrackUIs();
-            }
-
-            const playTrack = () => { isPlaying = true; audio.play(); playPauseBtn.textContent = '❚❚'; updateAllTrackUIs(); };
-            const pauseTrack = () => { isPlaying = false; audio.pause(); playPauseBtn.textContent = '▶'; updateAllTrackUIs(); };
+            function loadTrack(trackInfo) { currentTrack = trackInfo; audio.src = trackInfo.file; updateAllTrackUIs(); }
+            const playTrack = () => { isPlaying = true; audio.play(); playPauseBtn.textContent = '❚❚'; playPauseBtn.setAttribute('aria-label', 'Pausar'); updateAllTrackUIs(); }
+            const pauseTrack = () => { isPlaying = false; audio.pause(); playPauseBtn.textContent = '▶'; playPauseBtn.setAttribute('aria-label', 'Reproducir'); updateAllTrackUIs(); }
             
             function updateAllTrackUIs() {
                 document.querySelectorAll('.track-item').forEach(item => {
                     const isActive = item.dataset.src === currentTrack?.file;
                     item.classList.toggle('active', isActive);
-                    const playIcon = item.querySelector('.play-icon');
-                    if (isActive) playIcon.textContent = isPlaying ? '🎶' : '▶';
-                    else playIcon.textContent = '▶';
+                    item.querySelector('.play-icon').textContent = (isActive && isPlaying) ? '🎶' : '▶';
                 });
             }
             
@@ -558,83 +522,43 @@ Entre ritmos intensos, atmósferas melancólicas y una estética digital cruda, 
             for (const [folder, files] of Object.entries(AUDIO_LIBRARY)) {
                 const albumGroup = document.createElement('div');
                 albumGroup.className = 'album-group';
-                
-                albumGroup.innerHTML = `
-                    <div class="album-header" role="button" aria-expanded="false" aria-controls="album-${slugify(folder)}">
-                        <h3>${folder}</h3>
-                        <span class="album-toggle">›</span>
-                    </div>
-                    <ul class="track-list" id="album-${slugify(folder)}"></ul>
-                `;
+                const folderSlug = slugify(folder);
+                albumGroup.innerHTML = `<div class="album-header" role="button" aria-expanded="false" aria-controls="album-${folderSlug}"><h3>${folder}</h3><span class="album-toggle">›</span></div><ul class="track-list" id="album-${folderSlug}"></ul>`;
                 
                 const trackListEl = albumGroup.querySelector('.track-list');
                 files.forEach(file => {
-                    const title = file.replace('.mp3', '');
+                    const title = file.replace(/\.mp3$/i, '');
                     const trackSlug = slugify(title);
                     const trackPath = `${AUDIO_LIBRARY_ROOT}${folder}/${file}`;
-                    
                     const li = document.createElement('li');
                     li.className = 'track-item';
                     li.dataset.src = trackPath;
-                    li.innerHTML = `
-                        <span class="play-icon">▶</span>
-                        <span class="track-title">${title}</span>
-                        <div class="track-actions">
-                            <button class="favorite-btn" data-slug="${trackSlug}" aria-label="Añadir a favoritos" role="button">♡</button>
-                            <button class="share-btn" data-slug="${trackSlug}" aria-label="Compartir" role="button">🔗</button>
-                        </div>
-                        <span class="visually-hidden" id="play-count-${trackSlug}"></span>
-                    `;
+                    li.innerHTML = `<span class="play-icon">▶</span><span class="track-title">${title}</span><div class="track-actions"><button class="favorite-btn" data-slug="${trackSlug}" aria-label="Añadir a favoritos" role="button">♡</button><button class="share-btn" data-slug="${trackSlug}" aria-label="Compartir" role="button">🔗</button></div><span class="visually-hidden" id="play-count-${trackSlug}"></span>`;
                     trackListEl.appendChild(li);
 
                     li.addEventListener('click', (e) => {
                         if (e.target.closest('.track-actions')) return;
                         const trackInfo = { file: trackPath, title: title };
-                        if (currentTrack?.file === trackPath && isPlaying) {
-                            pauseTrack();
-                        } else {
-                            loadTrack(trackInfo);
-                            playTrack();
-                        }
+                        if (currentTrack?.file === trackPath && isPlaying) { pauseTrack(); } 
+                        else { loadTrack(trackInfo); playTrack(); }
                     });
 
                     const favoriteBtn = li.querySelector('.favorite-btn');
-                    if (localStorage.getItem(`fav_${trackSlug}`) === 'true') {
-                        favoriteBtn.classList.add('favorited');
-                        favoriteBtn.textContent = '♥';
-                    }
-                    favoriteBtn.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        const favState = favoriteBtn.classList.toggle('favorited');
-                        localStorage.setItem(`fav_${trackSlug}`, favState);
-                        favoriteBtn.textContent = favState ? '♥' : '♡';
-                    });
+                    if (localStorage.getItem(`fav_${trackSlug}`) === 'true') { favoriteBtn.classList.add('favorited'); favoriteBtn.textContent = '♥'; }
+                    favoriteBtn.addEventListener('click', (e) => { e.stopPropagation(); const favState = favoriteBtn.classList.toggle('favorited'); localStorage.setItem(`fav_${trackSlug}`, favState); favoriteBtn.textContent = favState ? '♥' : '♡'; });
                     
-                    li.querySelector('.share-btn').addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        const shareUrl = `${window.location.origin}${window.location.pathname}#track-${trackSlug}`;
-                        navigator.clipboard.writeText(shareUrl).then(() => {
-                            alert(`Enlace copiado: ${shareUrl}`);
-                            window.location.hash = `#track-${trackSlug}`;
-                        });
-                    });
+                    li.querySelector('.share-btn').addEventListener('click', (e) => { e.stopPropagation(); const shareUrl = `${window.location.origin}${window.location.pathname}#track-${trackSlug}`; navigator.clipboard.writeText(shareUrl).then(() => { alert(`Enlace copiado: ${shareUrl}`); window.location.hash = `#track-${trackSlug}`; }); });
                     
-                    const playCountEl = document.getElementById(`play-count-${trackSlug}`);
-                    const playCount = localStorage.getItem(`play_count_${trackSlug}`) || '0';
-                    playCountEl.textContent = `Reproducciones: ${playCount}`;
+                    document.getElementById(`play-count-${trackSlug}`).textContent = `Reproducciones: ${localStorage.getItem(`play_count_${trackSlug}`) || '0'}`;
                 });
                 
                 libraryContainer.appendChild(albumGroup);
                 
-                const header = albumGroup.querySelector('.album-header');
-                header.addEventListener('click', () => {
-                    const isExpanded = header.getAttribute('aria-expanded') === 'true';
-                    header.setAttribute('aria-expanded', !isExpanded);
-                    if (!isExpanded) {
-                        trackListEl.style.maxHeight = trackListEl.scrollHeight + 'px';
-                    } else {
-                        trackListEl.style.maxHeight = null;
-                    }
+                albumGroup.querySelector('.album-header').addEventListener('click', function() {
+                    const isExpanded = this.getAttribute('aria-expanded') === 'true';
+                    this.setAttribute('aria-expanded', !isExpanded);
+                    const trackList = this.nextElementSibling;
+                    trackList.style.maxHeight = isExpanded ? null : trackList.scrollHeight + 'px';
                 });
             }
 
@@ -647,57 +571,6 @@ Entre ritmos intensos, atmósferas melancólicas y una estética digital cruda, 
                 let playCount = (parseInt(localStorage.getItem(`play_count_${trackSlug}`) || '0', 10) + 1);
                 localStorage.setItem(`play_count_${trackSlug}`, playCount);
                 document.getElementById(`play-count-${trackSlug}`).textContent = `Reproducciones: ${playCount}`;
-                
-                // Simple auto-next logic needed here
-            });
-            
-            // --- ADMIN PANEL & ROUTING ---
-            const mainContent = document.getElementById('main-content');
-            const adminPanel = document.getElementById('admin-panel');
-            const heroTitleDisplay = document.querySelector('.hero-title');
-            const heroSubtitleDisplay = document.querySelector('.hero-subtitle');
-            const heroTitleEditor = document.getElementById('hero-title-editor');
-            const heroSubtitleEditor = document.getElementById('hero-subtitle-editor');
-            const saveHeroBtn = document.getElementById('save-hero-text-btn');
-            const bioDisplay = document.getElementById('bio-text-display');
-            const bioEditor = document.getElementById('bio-editor');
-            const saveBioBtn = document.getElementById('save-bio-btn');
-            
-            const showAdminPanel = () => { mainContent.style.display = 'none'; adminPanel.style.display = 'block'; };
-            const showMainContent = () => { mainContent.style.display = 'block'; adminPanel.style.display = 'none'; };
-
-            function checkHash() {
-                if(window.location.hash === '#/admin') {
-                    showAdminPanel();
-                    heroTitleEditor.value = localStorage.getItem('heroTitle') || heroTitleDisplay.innerText;
-                    heroSubtitleEditor.value = localStorage.getItem('heroSubtitle') || heroSubtitleDisplay.innerText;
-                    bioEditor.value = localStorage.getItem('bioText') || bioDisplay.innerText;
-                } else {
-                    showMainContent();
-                    heroTitleDisplay.innerText = localStorage.getItem('heroTitle') || 'NUCK';
-                    heroSubtitleDisplay.innerText = localStorage.getItem('heroSubtitle') || 'new music';
-                    bioDisplay.innerText = localStorage.getItem('bioText') || bioDisplay.innerText;
-                }
-            }
-            
-            saveHeroBtn.addEventListener('click', () => {
-                localStorage.setItem('heroTitle', heroTitleEditor.value);
-                localStorage.setItem('heroSubtitle', heroSubtitleEditor.value);
-                alert('Textos guardados (simulado).');
-            });
-            saveBioBtn.addEventListener('click', () => {
-                localStorage.setItem('bioText', bioEditor.value);
-                alert('Biografía guardada (simulado).');
-            });
-
-            window.addEventListener('hashchange', checkHash);
-            checkHash();
-
-            let keySequence = [];
-            document.addEventListener('keydown', (e) => {
-                keySequence.push(e.key);
-                if (keySequence.length > 3) keySequence.shift();
-                if (keySequence.join('') === 'aaa') window.location.hash = '#/admin';
             });
         });
     </script>
