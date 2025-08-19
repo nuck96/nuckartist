@@ -20,7 +20,7 @@
             --color-background: #000000;
             --color-surface: #121212;
             --color-outline: #2a2a2a;
-            --color-accent: #1DB954; /* Spotify Green for accents */
+            --color-accent: #1DB954;
         }
 
         /* --- CSS Reset & Base Styles --- */
@@ -45,7 +45,7 @@
 
         .section-container {
             padding: 60px 20px;
-            max-width: 1100px;
+            max-width: 1200px;
             margin: 0 auto;
         }
         
@@ -80,8 +80,13 @@
                 scroll-behavior: auto !important;
             }
         }
+        
+        button:focus-visible, a:focus-visible {
+            outline: 2px solid var(--color-accent);
+            outline-offset: 2px;
+        }
 
-        /* --- 1. Encabezado y Hero --- */
+        /* --- Portada (Hero) --- */
         .hero-section {
             position: relative;
             height: 100vh;
@@ -93,13 +98,17 @@
             overflow: hidden;
         }
 
-        .hero-video-bg {
+        .hero-video-wrapper {
             position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            min-width: 100%; min-height: 100%;
-            width: auto; height: auto;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             z-index: 1;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+        
+        .hero-video-bg {
+            width: 100%; height: 100%;
             object-fit: cover;
         }
 
@@ -114,6 +123,7 @@
         .hero-content {
             position: relative;
             z-index: 3;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
         }
 
         .hero-title {
@@ -133,40 +143,45 @@
             text-transform: uppercase;
         }
         
-        /* --- 2. Texto Descriptivo --- */
-        .description-block {
-            padding: 80px 20px;
-            background: linear-gradient(to right, #000000, #080808, #000000);
-        }
-        .description-text {
-            max-width: 700px;
-            margin: 0 auto;
-            font-size: 1.1rem;
-            line-height: 1.8;
+        @media (prefers-reduced-motion: reduce) {
+            .hero-video-bg { display: none; }
+            .hero-video-wrapper {
+                background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('assets/carrusel/DSCF9176.jpg') center/cover;
+            }
         }
 
-        /* --- 3. Carrusel --- */
-        .carousel {
+        /* --- Carrusel --- */
+        .carousel-section {
             position: relative;
-            width: 100%;
-            height: 70vh;
-            background-color: #111;
             overflow: hidden;
-            touch-action: pan-y;
         }
-
-        .carousel-track {
+        .carousel-track-container {
             display: flex;
-            height: 100%;
-            transition: transform 0.5s ease-in-out;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none; /* Firefox */
         }
-
+        .carousel-track-container::-webkit-scrollbar { display: none; } /* Chrome, Safari */
+        
         .carousel-item {
-            flex: 0 0 100%;
-            width: 100%;
-            height: 100%;
+            flex: 0 0 80%;
+            width: 80%;
+            height: 60vh;
+            margin-right: 20px;
+            scroll-snap-align: center;
+            border-radius: 12px;
+            overflow: hidden;
+            background-color: #111;
         }
-
+        
+        @media (min-width: 768px) {
+            .carousel-item { flex-basis: 45%; width: 45%; }
+        }
+        @media (min-width: 1024px) {
+            .carousel-item { flex-basis: 30%; width: 30%; }
+        }
+        
         .carousel-item img,
         .carousel-item video {
             width: 100%; height: 100%;
@@ -174,60 +189,73 @@
         }
 
         .carousel-nav {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 100%;
+            display: none;
+        }
+
+        @media (min-width: 1024px) {
+            .carousel-nav {
+                display: flex;
+                justify-content: space-between;
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+                width: 100%;
+                padding: 0 40px;
+                pointer-events: none;
+            }
+        
+            .carousel-nav button {
+                pointer-events: all;
+                background: rgba(0,0,0,0.5); border: 1px solid var(--color-outline);
+                color: white; border-radius: 50%;
+                width: 45px; height: 45px;
+                font-size: 1.8rem; cursor: pointer; transition: background-color 0.2s;
+            }
+            .carousel-nav button:hover { background-color: rgba(0,0,0,0.8); }
+        }
+        
+        /* --- BIO --- */
+        .bio-text { font-size: 1.1rem; line-height: 1.8; max-width: 700px; margin: 0 auto; white-space: pre-line; }
+        
+        /* --- VANKIFF Video --- */
+        .vankiff-video-wrapper {
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .vankiff-video { width: 100%; display: block; }
+        
+        /* --- Biblioteca de Música --- */
+        .music-library { max-width: 800px; margin: 0 auto; }
+        .album-group { margin-bottom: 20px; }
+        .album-header {
+            background-color: var(--color-surface);
+            padding: 15px 20px;
+            border-radius: 8px;
+            cursor: pointer;
             display: flex;
             justify-content: space-between;
-            padding: 0 20px;
-            pointer-events: none;
+            align-items: center;
+            text-align: left;
+            border: 1px solid var(--color-outline);
+        }
+        .album-header h3 { font-family: var(--font-body); font-size: 1.2rem; }
+        .album-toggle { transition: transform 0.3s ease; }
+        .album-header[aria-expanded="true"] .album-toggle { transform: rotate(90deg); }
+        
+        .track-list {
+            list-style: none;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out;
+            padding-left: 20px;
         }
         
-        .carousel-nav button {
-            pointer-events: all;
-            background: rgba(0,0,0,0.5);
-            border: 1px solid var(--color-outline);
-            color: white;
-            border-radius: 50%;
-            width: 40px; height: 40px;
-            font-size: 1.5rem; cursor: pointer;
-            transition: background-color 0.2s;
-        }
-        .carousel-nav button:hover { background-color: rgba(0,0,0,0.8); }
-
-        /* --- 4. Biografía --- */
-        .bio-text {
-            font-size: 1.1rem;
-            line-height: 1.8;
-            max-width: 700px;
-            margin: 0 auto;
-            white-space: pre-line;
-        }
-        
-        /* --- 5. Video VANKIFF --- */
-        .vankiff-video {
-            width: 100%;
-            max-width: 900px;
-            height: auto;
-            display: block;
-            margin: 0 auto;
-            border: 1px solid var(--color-outline);
-            border-radius: 8px;
-        }
-        
-        /* --- 6. Biblioteca de Música (Spotify Style) --- */
-        .music-player {
-            background-color: var(--color-surface);
-            border-radius: 10px; padding: 20px;
-            border: 1px solid var(--color-outline);
-            max-width: 800px; margin: 0 auto;
-        }
-
-        .track-list { list-style: none; }
         .track-item { display: flex; align-items: center; padding: 12px 10px; cursor: pointer; border-bottom: 1px solid var(--color-outline); transition: background-color 0.2s ease; }
         .track-item:last-child { border-bottom: none; }
-        .track-item:hover, .track-item.active { background-color: #282828; border-radius: 5px; }
+        .track-item:hover, .track-item.active { background-color: #282828; }
         .track-item .play-icon { font-size: 1rem; margin-right: 15px; width: 20px; text-align: center; }
         .track-item.active .play-icon { color: var(--color-accent); }
         .track-title { flex-grow: 1; font-weight: 600; text-align: left; }
@@ -237,45 +265,33 @@
         .track-actions button:hover { color: var(--color-text); }
         .track-actions .favorite-btn.favorited { color: var(--color-accent); }
 
-        .player-controls { display: flex; align-items: center; gap: 15px; padding-top: 20px; border-top: 1px solid var(--color-outline); margin-top: 20px; }
+        .player-controls { display: flex; align-items: center; gap: 15px; padding: 20px; background-color: var(--color-surface); border-radius: 10px; margin-top: 30px; }
         #play-pause-btn { background: none; border: none; color: var(--color-text); font-size: 2rem; cursor: pointer; line-height: 1; }
         .progress-container { flex-grow: 1; display: flex; align-items: center; gap: 10px; }
         #current-time, #total-time { font-size: 0.8rem; color: var(--color-subtle-text); min-width: 40px; }
         #progress-bar { position: relative; width: 100%; height: 4px; background-color: #404040; border-radius: 2px; cursor: pointer; }
         #progress { position: absolute; top:0; left: 0; height: 100%; background-color: var(--color-text); border-radius: 2px; transform-origin: left; transform: scaleX(0); }
         #progress-bar:hover #progress { background-color: var(--color-accent); }
-
-        /* --- 7. Redes & Contacto --- */
+        
+        /* --- Contacto y Redes --- */
         .social-icons { display: flex; justify-content: center; gap: 25px; margin-bottom: 40px; }
         .social-icons a { color: var(--color-subtle-text); text-decoration: none; transition: color 0.3s ease; }
         .social-icons a:hover { color: var(--color-text); }
         .social-icons svg { width: 28px; height: 28px; fill: currentColor; }
-
-        .contact-btn {
-            display: inline-block; background-color: var(--color-text); color: var(--color-background);
-            padding: 12px 28px; font-size: 1.1rem; font-weight: 600; font-family: var(--font-body);
-            text-decoration: none; border-radius: 50px; transition: transform 0.2s ease;
-        }
+        .contact-btn { display: inline-block; background-color: var(--color-text); color: var(--color-background); padding: 12px 28px; font-size: 1.1rem; font-weight: 600; font-family: var(--font-body); text-decoration: none; border-radius: 50px; transition: transform 0.2s ease; }
         .contact-btn:hover { transform: scale(1.05); }
 
-        /* --- 8. Footer --- */
+        /* --- Footer --- */
         .footer { padding: 40px 20px; color: var(--color-subtle-text); font-size: 0.9rem; }
 
-        /* --- 9. Admin Panel (Simulado) --- */
-        #admin-panel {
-            display: none; /* Oculto por defecto */
-            background-color: #f0f2f5;
-            color: #1c1e21;
-            padding: 20px;
-            text-align: left;
-        }
+        /* --- Admin Panel --- */
+        #admin-panel { display: none; background-color: #f0f2f5; color: #1c1e21; padding: 20px; text-align: left; }
         .admin-container { max-width: 800px; margin: 20px auto; }
         .admin-card { background: #fff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px; padding: 20px; }
         .admin-card h3 { font-family: var(--font-body); margin-bottom: 15px; }
-        .admin-card textarea { width: 100%; min-height: 100px; padding: 8px; border: 1px solid #dddfe2; border-radius: 6px; }
+        .admin-card textarea, .admin-card input { width: 100%; padding: 8px; border: 1px solid #dddfe2; border-radius: 6px; margin-bottom: 10px; }
         .admin-card button { background-color: #1877f2; color: #fff; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; }
 
-        /* --- Responsive Adjustments --- */
         @media (max-width: 768px) {
             .player-controls { flex-wrap: wrap; justify-content: center; }
             .progress-container { width: 100%; order: -1; margin-bottom: 15px; }
@@ -286,42 +302,36 @@
     </style>
 </head>
 <body>
-
     <main id="main-content">
-        <!-- 1. ENCABEZADO Y VIDEO HERO -->
+        <!-- PORTADA -->
         <header class="hero-section">
             <div class="hero-content">
+                <!-- EDITAR TITULO/SUBTITULO DE PORTADA AQUÍ -->
                 <h1 class="hero-title">NUCK</h1>
                 <p class="hero-subtitle">new music</p>
             </div>
             <div class="hero-overlay"></div>
-            <video autoplay muted loop playsinline class="hero-video-bg" poster="data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=">
-                <source src="assets/videos/LOOP PANTALLA PRINCIPAL.mp4" type="video/mp4">
-            </video>
+            <div class="hero-video-wrapper">
+                <video autoplay muted loop playsinline class="hero-video-bg" poster="data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=">
+                    <source src="assets/videos/LOOP PANTALLA PRINCIPAL.mp4" type="video/mp4">
+                </video>
+            </div>
         </header>
 
-        <!-- 2. TEXTO DESCRIPTIVO -->
-        <section class="description-block">
-             <p class="description-text">
-                <!-- EDITAR TEXTO DESCRIPTIVO AQUÍ -->
-                Una estética digital cruda que define un universo propio dentro de la nueva ola underground.
-             </p>
-        </section>
-
-        <!-- 3. CARRUSEL -->
+        <!-- CARRUSEL -->
         <section class="section-container carousel-section">
             <div class="carousel">
-                <div class="carousel-track">
-                    <!-- Los items del carrusel se insertarán aquí con JS -->
+                <div class="carousel-track-container">
+                    <!-- Los items se insertan aquí con JS -->
                 </div>
                 <div class="carousel-nav">
-                    <button id="carousel-prev" aria-label="Anterior">‹</button>
-                    <button id="carousel-next" aria-label="Siguiente">›</button>
+                    <button id="carousel-prev" aria-label="Anterior" role="button">‹</button>
+                    <button id="carousel-next" aria-label="Siguiente" role="button">›</button>
                 </div>
             </div>
         </section>
 
-        <!-- 4. BIOGRAFÍA -->
+        <!-- BIO -->
         <section class="section-container bio">
             <h2 class="section-title">BIO</h2>
             <p class="bio-text" id="bio-text-display">
@@ -333,32 +343,34 @@ Entre ritmos intensos, atmósferas melancólicas y una estética digital cruda, 
             </p>
         </section>
 
-        <!-- 5. VIDEO VANKIFF -->
+        <!-- VIDEO "VANKIFF FINAL" -->
         <section class="section-container vankiff">
-            <video controls loop muted autoplay playsinline class="vankiff-video">
-                <source src="assets/videos/VANKIFF FINAL.mp4" type="video/mp4">
-            </video>
+            <div class="vankiff-video-wrapper">
+                <video controls loop muted autoplay playsinline class="vankiff-video">
+                    <source src="assets/videos/VANKIFF FINAL.mp4" type="video/mp4">
+                </video>
+            </div>
         </section>
         
-        <!-- 6. BIBLIOTECA DE MÚSICA -->
+        <!-- BIBLIOTECA DE MÚSICA -->
         <section class="section-container music-library">
             <h2 class="section-title">BIBLIOTECA</h2>
-            <div class="music-player">
-                <ul id="track-list-container" class="track-list"></ul>
-                <div class="player-controls">
-                    <button id="play-pause-btn" aria-label="Reproducir/Pausar">▶</button>
-                    <div class="progress-container">
-                        <span id="current-time">0:00</span>
-                        <div id="progress-bar" role="slider" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-valuetext="Progreso de la canción">
-                            <div id="progress"></div>
-                        </div>
-                        <span id="total-time">0:00</span>
+            <div id="library-container">
+                <!-- Las subcarpetas se insertan aquí con JS -->
+            </div>
+            <div class="player-controls">
+                <button id="play-pause-btn" aria-label="Reproducir/Pausar" role="button">▶</button>
+                <div class="progress-container">
+                    <span id="current-time">0:00</span>
+                    <div id="progress-bar" role="slider" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-valuetext="Progreso">
+                        <div id="progress"></div>
                     </div>
+                    <span id="total-time">0:00</span>
                 </div>
             </div>
         </section>
 
-        <!-- 7. CONTACTO Y REDES -->
+        <!-- CONTACTO -->
         <section class="section-container contact">
             <h2 class="section-title">CONTACTO</h2>
             <div class="social-icons">
@@ -371,34 +383,35 @@ Entre ritmos intensos, atmósferas melancólicas y una estética digital cruda, 
             <a href="mailto:nuckartist@gmail.com" class="contact-btn">Escribime</a>
         </section>
 
-        <!-- 8. FOOTER -->
+        <!-- FOOTER -->
         <footer class="footer">
             <p>&copy; 2025 - NUCK. All rights reserved.</p>
         </footer>
     </main>
     
-    <!-- 9. PANEL DE ADMINISTRADOR SIMULADO -->
+    <!-- PANEL DE ADMINISTRADOR SIMULADO -->
     <div id="admin-panel">
-         <div class="admin-container">
+         <div class="admin-container section-container">
             <h2 class="section-title">Panel de Administración</h2>
+            <div class="admin-card">
+                <h3>Editar Título Portada</h3>
+                <input type="text" id="hero-title-editor">
+                <input type="text" id="hero-subtitle-editor">
+                <button id="save-hero-text-btn">Guardar</button>
+            </div>
             <div class="admin-card">
                 <h3>Editar Biografía</h3>
                 <textarea id="bio-editor"></textarea>
-                <button id="save-bio-btn">Guardar Cambios</button>
-            </div>
-            <div class="admin-card">
-                <h3>Gestionar Carrusel</h3>
-                <p>Simulación: Aquí podrías agregar o quitar items del carrusel.</p>
-                <button>Subir Nuevo Ítem</button>
+                <button id="save-bio-btn">Guardar</button>
             </div>
              <div class="admin-card">
-                <h3>Gestionar Canciones</h3>
-                <p>Simulación: Aquí podrías editar los metadatos de las canciones.</p>
-                <button>Agregar Canción</button>
+                <h3>Gestionar Contenido</h3>
+                <p>Simulación: Aquí podrías agregar/quitar items del carrusel y canciones.</p>
+                <button>Abrir Gestor de Contenido</button>
             </div>
+            <a href="#" style="color: #1877f2; text-decoration: none;">Volver al sitio</a>
          </div>
     </div>
-
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -407,135 +420,132 @@ Entre ritmos intensos, atmósferas melancólicas y una estética digital cruda, 
             
             // <!-- AGREGAR NUEVOS ÍTEMS DE CARRUSEL AQUÍ -->
             const CAROUSEL_ITEMS = [
-                { type: 'image', src: 'assets/carrusel/DSCF9176.jpg', alt: 'Visual 1' },
-                { type: 'video', src: 'assets/carrusel/clip 1.mp4' },
-                { type: 'image', src: 'assets/carrusel/DSCF9177.jpg', alt: 'Visual 2' },
-                { type: 'video', src: 'assets/carrusel/clip 2.mp4' }
+                "DSCF9176.jpg",
+                "clip 1.mp4",
+                "DSCF9177.jpg",
+                "clip 2.mp4"
             ];
 
-            // <!-- AGREGAR NUEVAS CANCIONES AQUÍ -->
-            const TRACKS = [
-                {
-                    title: "NUCK. CHERKI. prod.BYTU",
-                    file: "assets/audio/NUCK. CHERKI. prod.BYTU.mp3"
-                },
-                {
-                    title: "NUCK. EN LLAMAS (ft. XYZ)",
-                    file: "assets/audio/NUCK. EN LLAMAS (ft. XYZ).mp3"
-                },
-                 {
-                    title: "NUCK. MODO DIABLO. prod.DALEPLAY",
-                    file: "assets/audio/NUCK. MODO DIABLO (prod. DALEPLAY).mp3"
-                }
-            ];
+            // <!-- CONFIGURAR RUTA DE AUDIO_LIBRARY_ROOT AQUÍ -->
+            const AUDIO_LIBRARY_ROOT = "assets/audio/";
+            
+            // <!-- AGREGAR NUEVAS SUBCARPETAS Y CANCIONES AQUÍ -->
+            const AUDIO_LIBRARY = {
+                "Albumes": [
+                    "NUCK. CHERKI. prod.BYTU.mp3",
+                    "NUCK. EN LLAMAS (ft. XYZ).mp3"
+                ],
+                "Singles": [
+                    "NUCK. MODO DIABLO (prod. DALEPLAY).mp3"
+                ]
+            };
 
             // --- LÓGICA DE LA APLICACIÓN ---
             
-            const slugify = (text) => text.toString().toLowerCase()
-                .replace(/\s+/g, '-')           // Replace spaces with -
-                .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
-                .replace(/\-\-+/g, '-')         // Replace multiple - with single -
-                .replace(/^-+/, '')             // Trim - from start of text
-                .replace(/-+$/, '');            // Trim - from end of text
+            const slugify = (text) => {
+                const a = 'àáâäæãåāăąçćčđďèéêëēėęěğǵḧîïíīįìłḿñńǹňôöòóœøōõőṕŕřßśšşșťțûüùúūǘůűųẃẍÿýžźż·/_,:;'
+                const b = 'aaaaaaaaaacccddeeeeeeeegghiiiiiilmnnnnoooooooooprrsssssttuuuuuuuuuwxyyzzz------'
+                const p = new RegExp(a.split('').join('|'), 'g')
+
+                return text.toString().toLowerCase()
+                    .replace(/\s+/g, '-') // Replace spaces with -
+                    .replace(p, c => b.charAt(a.indexOf(c))) // Replace special characters
+                    .replace(/&/g, '-and-') // Replace & with 'and'
+                    .replace(/[^\w\-]+/g, '') // Remove all non-word chars
+                    .replace(/\-\-+/g, '-') // Replace multiple - with single -
+                    .replace(/^-+/, '') // Trim - from start of text
+                    .replace(/-+$/, '') // Trim - from end of text
+            }
 
             // --- CARRUSEL ---
-            const carouselTrack = document.querySelector('.carousel-track');
+            const carouselTrackContainer = document.querySelector('.carousel-track-container');
             const prevBtn = document.getElementById('carousel-prev');
             const nextBtn = document.getElementById('carousel-next');
-            let currentIndex = 0;
             let slideInterval;
             
             function createCarousel() {
                 CAROUSEL_ITEMS.forEach(item => {
                     const itemEl = document.createElement('div');
                     itemEl.className = 'carousel-item';
-                    if (item.type === 'image') {
-                        itemEl.innerHTML = `<img src="${item.src}" alt="${item.alt}" loading="lazy">`;
-                    } else {
-                        itemEl.innerHTML = `<video autoplay muted loop playsinline preload="metadata"><source src="${item.src}" type="video/mp4"></video>`;
+                    const ext = item.split('.').pop().toLowerCase();
+                    if (['jpg', 'jpeg', 'png', 'webp', 'gif'].includes(ext)) {
+                        itemEl.innerHTML = `<img src="assets/carrusel/${item}" alt="" loading="lazy">`;
+                    } else if (['mp4', 'webm'].includes(ext)) {
+                        itemEl.innerHTML = `<video autoplay muted loop playsinline preload="metadata" data-observable="true"><source src="assets/carrusel/${item}" type="video/mp4"></video>`;
                     }
-                    carouselTrack.appendChild(itemEl);
+                    carouselTrackContainer.appendChild(itemEl);
                 });
             }
 
-            function updateCarousel() {
-                carouselTrack.style.transform = `translateX(-${currentIndex * 100}%)`;
-            }
-            
             const startSlideShow = () => slideInterval = setInterval(() => nextBtn.click(), 5000);
             const stopSlideShow = () => clearInterval(slideInterval);
-
-            if (carouselTrack) {
+            
+            if (carouselTrackContainer) {
                 createCarousel();
-                nextBtn.addEventListener('click', () => {
-                    currentIndex = (currentIndex + 1) % CAROUSEL_ITEMS.length;
-                    updateCarousel();
-                });
-                prevBtn.addEventListener('click', () => {
-                    currentIndex = (currentIndex - 1 + CAROUSEL_ITEMS.length) % CAROUSEL_ITEMS.length;
-                    updateCarousel();
-                });
+                const scrollAmount = () => carouselTrackContainer.querySelector('.carousel-item').clientWidth + 20;
 
-                carouselTrack.parentElement.addEventListener('mouseenter', stopSlideShow);
-                carouselTrack.parentElement.addEventListener('mouseleave', startSlideShow);
+                nextBtn.addEventListener('click', () => carouselTrackContainer.scrollBy({ left: scrollAmount(), behavior: 'smooth' }));
+                prevBtn.addEventListener('click', () => carouselTrackContainer.scrollBy({ left: -scrollAmount(), behavior: 'smooth' }));
                 
-                // Swipe functionality
-                let touchStartX = 0;
-                carouselTrack.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; stopSlideShow(); });
-                carouselTrack.addEventListener('touchend', e => {
-                    let touchEndX = e.changedTouches[0].screenX;
-                    if (touchEndX < touchStartX - 50) nextBtn.click();
-                    if (touchEndX > touchStartX + 50) prevBtn.click();
-                    startSlideShow();
-                });
-                
+                carouselTrackContainer.parentElement.addEventListener('mouseenter', stopSlideShow);
+                carouselTrackContainer.parentElement.addEventListener('mouseleave', startSlideShow);
                 startSlideShow();
+
+                // Intersection Observer for videos
+                const videoObserver = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        const video = entry.target;
+                        if (entry.isIntersecting) {
+                            video.play().catch(() => {});
+                        } else {
+                            video.pause();
+                        }
+                    });
+                }, { threshold: 0.5 });
+                
+                document.querySelectorAll('video[data-observable]').forEach(video => videoObserver.observe(video));
             }
 
             // --- REPRODUCTOR DE MÚSICA ---
             const audio = new Audio();
-            let currentTrackIndex = 0;
+            let currentTrack = null;
             let isPlaying = false;
             let animationFrameId;
 
-            const trackListContainer = document.getElementById('track-list-container');
+            const libraryContainer = document.getElementById('library-container');
             const playPauseBtn = document.getElementById('play-pause-btn');
             const progressBarEl = document.getElementById('progress-bar');
             const progress = document.getElementById('progress');
             const currentTimeEl = document.getElementById('current-time');
             const totalTimeEl = document.getElementById('total-time');
 
-            function loadTrack(index) {
-                currentTrackIndex = index;
-                audio.src = TRACKS[index].file;
-                updateTrackListUI();
+            function loadTrack(trackInfo) {
+                currentTrack = trackInfo;
+                audio.src = trackInfo.file;
+                updateAllTrackUIs();
             }
 
-            const playTrack = () => { isPlaying = true; audio.play(); playPauseBtn.textContent = '❚❚'; playPauseBtn.setAttribute('aria-label', 'Pausar'); updateTrackListUI(); };
-            const pauseTrack = () => { isPlaying = false; audio.pause(); playPauseBtn.textContent = '▶'; playPauseBtn.setAttribute('aria-label', 'Reproducir'); updateTrackListUI(); };
+            const playTrack = () => { isPlaying = true; audio.play(); playPauseBtn.textContent = '❚❚'; updateAllTrackUIs(); };
+            const pauseTrack = () => { isPlaying = false; audio.pause(); playPauseBtn.textContent = '▶'; updateAllTrackUIs(); };
             
-            function updateTrackListUI() {
-                document.querySelectorAll('.track-item').forEach((item, index) => {
-                    item.classList.toggle('active', index === currentTrackIndex);
+            function updateAllTrackUIs() {
+                document.querySelectorAll('.track-item').forEach(item => {
+                    const isActive = item.dataset.src === currentTrack?.file;
+                    item.classList.toggle('active', isActive);
                     const playIcon = item.querySelector('.play-icon');
-                    if (index === currentTrackIndex) playIcon.textContent = isPlaying ? '🎶' : '▶';
+                    if (isActive) playIcon.textContent = isPlaying ? '🎶' : '▶';
                     else playIcon.textContent = '▶';
                 });
             }
-
+            
             function updateProgress() {
-                if (audio.duration) {
+                if (audio.duration && isPlaying) {
                     const progressPercent = audio.currentTime / audio.duration;
                     progress.style.transform = `scaleX(${progressPercent})`;
-                    progressBarEl.setAttribute('aria-valuenow', Math.round(progressPercent * 100));
                     totalTimeEl.textContent = formatTime(audio.duration);
                     currentTimeEl.textContent = formatTime(audio.currentTime);
                 }
                 animationFrameId = requestAnimationFrame(updateProgress);
-            }
-
-            function setProgress(e) {
-                if (audio.duration) audio.currentTime = (e.offsetX / this.clientWidth) * audio.duration;
             }
 
             const formatTime = (seconds) => {
@@ -543,79 +553,112 @@ Entre ritmos intensos, atmósferas melancólicas y una estética digital cruda, 
                 const sec = Math.floor(seconds % 60);
                 return `${min}:${sec < 10 ? '0' : ''}${sec}`;
             }
-            
-            TRACKS.forEach((track, index) => {
-                const trackSlug = slugify(track.title);
-                const li = document.createElement('li');
-                li.className = 'track-item';
-                li.innerHTML = `
-                    <span class="play-icon">▶</span>
-                    <span class="track-title">${track.title}</span>
-                    <div class="track-actions">
-                        <button class="favorite-btn" data-slug="${trackSlug}" aria-label="Añadir a favoritos">♡</button>
-                        <button class="share-btn" data-slug="${trackSlug}" aria-label="Compartir canción">🔗</button>
+
+            // Build library UI
+            for (const [folder, files] of Object.entries(AUDIO_LIBRARY)) {
+                const albumGroup = document.createElement('div');
+                albumGroup.className = 'album-group';
+                
+                albumGroup.innerHTML = `
+                    <div class="album-header" role="button" aria-expanded="false" aria-controls="album-${slugify(folder)}">
+                        <h3>${folder}</h3>
+                        <span class="album-toggle">›</span>
                     </div>
-                    <span class="visually-hidden" id="play-count-${trackSlug}">Reproducciones: 0</span>
+                    <ul class="track-list" id="album-${slugify(folder)}"></ul>
                 `;
-                trackListContainer.appendChild(li);
-
-                li.addEventListener('click', (e) => {
-                    if (e.target.closest('.track-actions')) return;
-                    if (currentTrackIndex === index && isPlaying) { pauseTrack(); } else { loadTrack(index); playTrack(); }
-                });
-
-                // Favorite button logic
-                const favoriteBtn = li.querySelector('.favorite-btn');
-                const isFavorited = localStorage.getItem(`fav_${trackSlug}`) === 'true';
-                if (isFavorited) {
-                    favoriteBtn.classList.add('favorited');
-                    favoriteBtn.textContent = '♥';
-                    favoriteBtn.setAttribute('aria-label', 'Quitar de favoritos');
-                }
-                favoriteBtn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    const currentFavState = favoriteBtn.classList.toggle('favorited');
-                    localStorage.setItem(`fav_${trackSlug}`, currentFavState);
-                    favoriteBtn.textContent = currentFavState ? '♥' : '♡';
-                    favoriteBtn.setAttribute('aria-label', currentFavState ? 'Quitar de favoritos' : 'Añadir a favoritos');
-                });
                 
-                // Share button logic
-                li.querySelector('.share-btn').addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    const shareUrl = `${window.location.origin}${window.location.pathname}#track-${trackSlug}`;
-                    navigator.clipboard.writeText(shareUrl).then(() => {
-                        alert(`Enlace copiado: ${shareUrl}`);
-                        window.location.hash = `#track-${trackSlug}`;
+                const trackListEl = albumGroup.querySelector('.track-list');
+                files.forEach(file => {
+                    const title = file.replace('.mp3', '');
+                    const trackSlug = slugify(title);
+                    const trackPath = `${AUDIO_LIBRARY_ROOT}${folder}/${file}`;
+                    
+                    const li = document.createElement('li');
+                    li.className = 'track-item';
+                    li.dataset.src = trackPath;
+                    li.innerHTML = `
+                        <span class="play-icon">▶</span>
+                        <span class="track-title">${title}</span>
+                        <div class="track-actions">
+                            <button class="favorite-btn" data-slug="${trackSlug}" aria-label="Añadir a favoritos" role="button">♡</button>
+                            <button class="share-btn" data-slug="${trackSlug}" aria-label="Compartir" role="button">🔗</button>
+                        </div>
+                        <span class="visually-hidden" id="play-count-${trackSlug}"></span>
+                    `;
+                    trackListEl.appendChild(li);
+
+                    li.addEventListener('click', (e) => {
+                        if (e.target.closest('.track-actions')) return;
+                        const trackInfo = { file: trackPath, title: title };
+                        if (currentTrack?.file === trackPath && isPlaying) {
+                            pauseTrack();
+                        } else {
+                            loadTrack(trackInfo);
+                            playTrack();
+                        }
                     });
+
+                    const favoriteBtn = li.querySelector('.favorite-btn');
+                    if (localStorage.getItem(`fav_${trackSlug}`) === 'true') {
+                        favoriteBtn.classList.add('favorited');
+                        favoriteBtn.textContent = '♥';
+                    }
+                    favoriteBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const favState = favoriteBtn.classList.toggle('favorited');
+                        localStorage.setItem(`fav_${trackSlug}`, favState);
+                        favoriteBtn.textContent = favState ? '♥' : '♡';
+                    });
+                    
+                    li.querySelector('.share-btn').addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const shareUrl = `${window.location.origin}${window.location.pathname}#track-${trackSlug}`;
+                        navigator.clipboard.writeText(shareUrl).then(() => {
+                            alert(`Enlace copiado: ${shareUrl}`);
+                            window.location.hash = `#track-${trackSlug}`;
+                        });
+                    });
+                    
+                    const playCountEl = document.getElementById(`play-count-${trackSlug}`);
+                    const playCount = localStorage.getItem(`play_count_${trackSlug}`) || '0';
+                    playCountEl.textContent = `Reproducciones: ${playCount}`;
                 });
                 
-                // Update play count display from storage
-                const playCountEl = document.getElementById(`play-count-${trackSlug}`);
-                const playCount = parseInt(localStorage.getItem(`play_count_${trackSlug}`) || '0', 10);
-                playCountEl.textContent = `Reproducciones: ${playCount}`;
-            });
+                libraryContainer.appendChild(albumGroup);
+                
+                const header = albumGroup.querySelector('.album-header');
+                header.addEventListener('click', () => {
+                    const isExpanded = header.getAttribute('aria-expanded') === 'true';
+                    header.setAttribute('aria-expanded', !isExpanded);
+                    if (!isExpanded) {
+                        trackListEl.style.maxHeight = trackListEl.scrollHeight + 'px';
+                    } else {
+                        trackListEl.style.maxHeight = null;
+                    }
+                });
+            }
 
-            loadTrack(0);
             playPauseBtn.addEventListener('click', () => isPlaying ? pauseTrack() : playTrack());
             audio.addEventListener('play', () => requestAnimationFrame(updateProgress));
             audio.addEventListener('pause', () => cancelAnimationFrame(animationFrameId));
-            audio.addEventListener('loadedmetadata', updateProgress);
-            progressBarEl.addEventListener('click', setProgress);
+            progressBarEl.addEventListener('click', function(e) { if(audio.duration) audio.currentTime = (e.offsetX / this.clientWidth) * audio.duration; });
             audio.addEventListener('ended', () => {
-                const trackSlug = slugify(TRACKS[currentTrackIndex].title);
-                let playCount = parseInt(localStorage.getItem(`play_count_${trackSlug}`) || '0', 10) + 1;
+                const trackSlug = slugify(currentTrack.title);
+                let playCount = (parseInt(localStorage.getItem(`play_count_${trackSlug}`) || '0', 10) + 1);
                 localStorage.setItem(`play_count_${trackSlug}`, playCount);
                 document.getElementById(`play-count-${trackSlug}`).textContent = `Reproducciones: ${playCount}`;
-
-                currentTrackIndex = (currentTrackIndex + 1) % TRACKS.length;
-                loadTrack(currentTrackIndex);
-                playTrack();
+                
+                // Simple auto-next logic needed here
             });
             
-            // --- HASH ROUTING & ADMIN PANEL ---
+            // --- ADMIN PANEL & ROUTING ---
             const mainContent = document.getElementById('main-content');
             const adminPanel = document.getElementById('admin-panel');
+            const heroTitleDisplay = document.querySelector('.hero-title');
+            const heroSubtitleDisplay = document.querySelector('.hero-subtitle');
+            const heroTitleEditor = document.getElementById('hero-title-editor');
+            const heroSubtitleEditor = document.getElementById('hero-subtitle-editor');
+            const saveHeroBtn = document.getElementById('save-hero-text-btn');
             const bioDisplay = document.getElementById('bio-text-display');
             const bioEditor = document.getElementById('bio-editor');
             const saveBioBtn = document.getElementById('save-bio-btn');
@@ -626,29 +669,35 @@ Entre ritmos intensos, atmósferas melancólicas y una estética digital cruda, 
             function checkHash() {
                 if(window.location.hash === '#/admin') {
                     showAdminPanel();
+                    heroTitleEditor.value = localStorage.getItem('heroTitle') || heroTitleDisplay.innerText;
+                    heroSubtitleEditor.value = localStorage.getItem('heroSubtitle') || heroSubtitleDisplay.innerText;
                     bioEditor.value = localStorage.getItem('bioText') || bioDisplay.innerText;
                 } else {
                     showMainContent();
+                    heroTitleDisplay.innerText = localStorage.getItem('heroTitle') || 'NUCK';
+                    heroSubtitleDisplay.innerText = localStorage.getItem('heroSubtitle') || 'new music';
                     bioDisplay.innerText = localStorage.getItem('bioText') || bioDisplay.innerText;
                 }
             }
             
+            saveHeroBtn.addEventListener('click', () => {
+                localStorage.setItem('heroTitle', heroTitleEditor.value);
+                localStorage.setItem('heroSubtitle', heroSubtitleEditor.value);
+                alert('Textos guardados (simulado).');
+            });
             saveBioBtn.addEventListener('click', () => {
                 localStorage.setItem('bioText', bioEditor.value);
-                alert('Biografía guardada (simulado). Refresca o vuelve a la página principal para ver el cambio.');
+                alert('Biografía guardada (simulado).');
             });
 
             window.addEventListener('hashchange', checkHash);
-            checkHash(); // Initial check on load
+            checkHash();
 
-            // Keyboard shortcut for admin
             let keySequence = [];
             document.addEventListener('keydown', (e) => {
                 keySequence.push(e.key);
                 if (keySequence.length > 3) keySequence.shift();
-                if (keySequence.join('') === 'aaa') {
-                    window.location.hash = '#/admin';
-                }
+                if (keySequence.join('') === 'aaa') window.location.hash = '#/admin';
             });
         });
     </script>
