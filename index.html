@@ -48,7 +48,7 @@
                     <img src="assets/carrusel/foto 1.jpg" alt="Visual de Nuck 1">
                 </div>
                 
-                <!-- Item 2: Clip de video -->
+                <!-- Item 2: Clip de video (CORREGIDO) -->
                 <div class="carousel-item">
                     <video src="assets/carrusel/clip 1.mp4" autoplay loop muted playsinline></video>
                 </div>
@@ -58,7 +58,7 @@
                     <img src="assets/carrusel/foto 2.jpg" alt="Visual de Nuck 2">
                 </div>
 
-                <!-- Item 4: Clip de video -->
+                <!-- Item 4: Clip de video (CORREGIDO) -->
                 <div class="carousel-item">
                     <video src="assets/carrusel/clip 2.mp4" autoplay loop muted playsinline></video>
                 </div>
@@ -148,14 +148,17 @@ Entre ritmos intensos, atmósferas melancólicas y una estética digital cruda, 
         //      dentro de la carpeta /assets/music/. El 'title' es lo que se mostrará en la página.
         // -->
         const tracks = [
+            // Tema 1 (CORREGIDO)
             {
                 title: "NUCK. CHERKI. prod.BYTU",
                 file: "assets/music/NUCK - CHERKI (prod. BYTU).mp3"
             },
+            // Tema 2 (CORREGIDO)
             {
                 title: "NUCK. MODO DIABLO. prod.DALEPLAY",
                 file: "assets/music/NUCK - MODO DIABLO (prod. DALEPLAY).mp3"
             },
+            // Tema 3 (CORREGIDO)
             {
                 title: "NUCK. SIN SEÑAL. prod.NEGRODUB",
                 file: "assets/music/NUCK - SIN SEÑAL (prod. NEGRODUB).mp3"
@@ -164,7 +167,7 @@ Entre ritmos intensos, atmósferas melancólicas y una estética digital cruda, 
             // Ejemplo:
             // {
             //    title: "NUCK. NUEVO TEMA. prod.PROD",
-            //    file: "assets/music/NUCK - NUEVO TEMA.mp3"
+            //    file: "assets/music/NUCK - NUEVO TEMA (prod. PROD).mp3"
             // },
         ];
 
@@ -204,7 +207,7 @@ Entre ritmos intensos, atmósferas melancólicas y una estética digital cruda, 
                 const playIcon = item.querySelector('.play-icon');
                 if (index === currentTrackIndex) {
                     item.classList.add('active');
-                    playIcon.textContent = isPlaying ? '🎶' : '▶';
+                    playIcon.textContent = '🎶';
                 } else {
                     item.classList.remove('active');
                     playIcon.textContent = '▶';
