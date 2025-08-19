@@ -102,7 +102,7 @@
             z-index: 1;
             border-radius: 30px;
             overflow: hidden;
-            transform: scale(1.02);
+            transform: scale(1.02); /* Evita bordes finos por el border-radius */
         }
         
         .hero-video-bg {
@@ -445,7 +445,7 @@ Entre ritmos intensos, atmósferas melancólicas y una estética digital cruda, 
                     const itemEl = document.createElement('div');
                     itemEl.className = 'carousel-item';
                     const ext = item.split('.').pop().toLowerCase();
-                    const path = `assets/carrusel/${item}`;
+                    const path = `assets/carrusel/${encodeURIComponent(item)}`;
                     if (['jpg', 'jpeg', 'png', 'webp', 'gif'].includes(ext)) {
                         itemEl.innerHTML = `<img src="${path}" alt="" loading="lazy">`;
                     } else if (['mp4', 'webm'].includes(ext)) {
@@ -459,14 +459,14 @@ Entre ritmos intensos, atmósferas melancólicas y una estética digital cruda, 
                     if (carouselTrackContainer.scrollLeft >= maxScroll - 1) {
                          carouselTrackContainer.scrollTo({ left: 0, behavior: 'smooth' });
                     } else {
-                        carouselTrackContainer.scrollBy({ left: carouselTrackContainer.clientWidth / 2, behavior: 'smooth' });
+                        carouselTrackContainer.scrollBy({ left: carouselTrackContainer.querySelector('.carousel-item').clientWidth + 20, behavior: 'smooth' });
                     }
                 }, 5000);
 
                 const stopSlideShow = () => clearInterval(slideInterval);
                 
-                nextBtn.addEventListener('click', () => carouselTrackContainer.scrollBy({ left: carouselTrackContainer.clientWidth / 2, behavior: 'smooth' }));
-                prevBtn.addEventListener('click', () => carouselTrackContainer.scrollBy({ left: -carouselTrackContainer.clientWidth / 2, behavior: 'smooth' }));
+                nextBtn.addEventListener('click', () => carouselTrackContainer.scrollBy({ left: carouselTrackContainer.querySelector('.carousel-item').clientWidth + 20, behavior: 'smooth' }));
+                prevBtn.addEventListener('click', () => carouselTrackContainer.scrollBy({ left: -(carouselTrackContainer.querySelector('.carousel-item').clientWidth + 20), behavior: 'smooth' }));
                 
                 carouselTrackContainer.parentElement.addEventListener('mouseenter', stopSlideShow);
                 carouselTrackContainer.parentElement.addEventListener('mouseleave', startSlideShow);
@@ -533,7 +533,7 @@ Entre ritmos intensos, atmósferas melancólicas y una estética digital cruda, 
                 files.forEach(file => {
                     const title = file.replace(/\.mp3$/i, '');
                     const trackSlug = slugify(title);
-                    const trackPath = `assets/audio/${folder}/${file}`;
+                    const trackPath = `assets/audio/${encodeURIComponent(folder)}/${encodeURIComponent(file)}`;
                     const li = document.createElement('li');
                     li.className = 'track-item';
                     li.dataset.src = trackPath;
