@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <!-- Metadatos básicos -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NUCK - new music</title>
@@ -9,9 +8,9 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
 
-    <!-- Estilos CSS Embebidos -->
+    <!-- CSS Embebido -->
     <style>
         :root {
             --font-title: 'Oswald', sans-serif;
@@ -21,10 +20,11 @@
             --color-background: #000000;
             --color-surface: #121212;
             --color-outline: #2a2a2a;
+            --color-accent: #1DB954; /* Spotify Green for accents */
         }
 
-        /* --- Estilos Globales --- */
-        * {
+        /* --- CSS Reset & Base Styles --- */
+        *, *::before, *::after {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
@@ -39,12 +39,18 @@
             color: var(--color-text);
             font-family: var(--font-body);
             text-align: center;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         .section-container {
-            padding: 80px 20px;
+            padding: 60px 20px;
             max-width: 1100px;
             margin: 0 auto;
+        }
+        
+        @media (min-width: 768px) {
+            .section-container { padding: 100px 40px; }
         }
 
         h2.section-title {
@@ -54,8 +60,28 @@
             margin-bottom: 50px;
             letter-spacing: 2px;
         }
+        
+        /* --- Accesibilidad y Utilidades --- */
+        .visually-hidden {
+            clip: rect(0 0 0 0);
+            clip-path: inset(50%);
+            height: 1px;
+            overflow: hidden;
+            position: absolute;
+            white-space: nowrap;
+            width: 1px;
+        }
+        
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
 
-        /* --- 1. Encabezado y Video Principal --- */
+        /* --- 1. Encabezado y Hero --- */
         .hero-section {
             position: relative;
             height: 100vh;
@@ -69,16 +95,25 @@
 
         .hero-video-bg {
             position: absolute;
-            top: 50%;
-            left: 50%;
+            top: 50%; left: 50%;
             transform: translate(-50%, -50%);
-            min-width: 100%;
-            min-height: 100%;
-            width: auto;
-            height: auto;
-            z-index: -1;
-            filter: brightness(0.5);
+            min-width: 100%; min-height: 100%;
+            width: auto; height: auto;
+            z-index: 1;
             object-fit: cover;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 3;
         }
 
         .hero-title {
@@ -90,32 +125,46 @@
         }
 
         .hero-subtitle {
-            font-family: var(--font-body);
+            font-family: var(--font-title);
             font-size: clamp(1rem, 4vw, 1.5rem);
+            font-weight: 400;
             letter-spacing: 3px;
             margin-top: 10px;
             text-transform: uppercase;
         }
+        
+        /* --- 2. Texto Descriptivo --- */
+        .description-block {
+            padding: 80px 20px;
+            background: linear-gradient(to right, #000000, #080808, #000000);
+        }
+        .description-text {
+            max-width: 700px;
+            margin: 0 auto;
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
 
-        /* --- 2. Carrusel --- */
-        .carousel-container {
+        /* --- 3. Carrusel --- */
+        .carousel {
             position: relative;
             width: 100%;
             height: 70vh;
             background-color: #111;
             overflow: hidden;
+            touch-action: pan-y;
+        }
+
+        .carousel-track {
+            display: flex;
+            height: 100%;
+            transition: transform 0.5s ease-in-out;
         }
 
         .carousel-item {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            opacity: 0;
-            transition: opacity 1.5s ease-in-out;
-        }
-
-        .carousel-item.active {
-            opacity: 1;
+            flex: 0 0 100%;
+            width: 100%;
+            height: 100%;
         }
 
         .carousel-item img,
@@ -123,8 +172,31 @@
             width: 100%; height: 100%;
             object-fit: cover;
         }
+
+        .carousel-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 20px;
+            pointer-events: none;
+        }
         
-        /* --- 3. Biografía --- */
+        .carousel-nav button {
+            pointer-events: all;
+            background: rgba(0,0,0,0.5);
+            border: 1px solid var(--color-outline);
+            color: white;
+            border-radius: 50%;
+            width: 40px; height: 40px;
+            font-size: 1.5rem; cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .carousel-nav button:hover { background-color: rgba(0,0,0,0.8); }
+
+        /* --- 4. Biografía --- */
         .bio-text {
             font-size: 1.1rem;
             line-height: 1.8;
@@ -133,7 +205,7 @@
             white-space: pre-line;
         }
         
-        /* --- 4. Video VANKIFF --- */
+        /* --- 5. Video VANKIFF --- */
         .vankiff-video {
             width: 100%;
             max-width: 900px;
@@ -144,51 +216,37 @@
             border-radius: 8px;
         }
         
-        /* --- 5. Biblioteca de Música (Spotify Style) --- */
+        /* --- 6. Biblioteca de Música (Spotify Style) --- */
         .music-player {
             background-color: var(--color-surface);
-            border-radius: 10px;
-            padding: 20px;
+            border-radius: 10px; padding: 20px;
             border: 1px solid var(--color-outline);
-            max-width: 800px;
-            margin: 0 auto;
+            max-width: 800px; margin: 0 auto;
         }
 
         .track-list { list-style: none; }
-
-        .track-item {
-            display: flex;
-            align-items: center;
-            padding: 12px 10px;
-            cursor: pointer;
-            border-bottom: 1px solid var(--color-outline);
-            transition: background-color 0.2s ease;
-        }
+        .track-item { display: flex; align-items: center; padding: 12px 10px; cursor: pointer; border-bottom: 1px solid var(--color-outline); transition: background-color 0.2s ease; }
         .track-item:last-child { border-bottom: none; }
         .track-item:hover, .track-item.active { background-color: #282828; border-radius: 5px; }
         .track-item .play-icon { font-size: 1rem; margin-right: 15px; width: 20px; text-align: center; }
-        .track-item.active .play-icon { color: #1DB954; }
+        .track-item.active .play-icon { color: var(--color-accent); }
         .track-title { flex-grow: 1; font-weight: 600; text-align: left; }
         
         .track-actions { display: flex; align-items: center; gap: 15px; }
         .track-actions button { background: none; border: none; color: var(--color-subtle-text); font-size: 1.2rem; cursor: pointer; transition: color 0.2s ease; }
         .track-actions button:hover { color: var(--color-text); }
-        .track-actions .favorite-btn.favorited { color: #1DB954; }
+        .track-actions .favorite-btn.favorited { color: var(--color-accent); }
 
         .player-controls { display: flex; align-items: center; gap: 15px; padding-top: 20px; border-top: 1px solid var(--color-outline); margin-top: 20px; }
         #play-pause-btn { background: none; border: none; color: var(--color-text); font-size: 2rem; cursor: pointer; line-height: 1; }
         .progress-container { flex-grow: 1; display: flex; align-items: center; gap: 10px; }
         #current-time, #total-time { font-size: 0.8rem; color: var(--color-subtle-text); min-width: 40px; }
-        #progress-bar { width: 100%; height: 4px; background-color: #404040; border-radius: 2px; cursor: pointer; }
-        #progress { width: 0; height: 100%; background-color: var(--color-text); border-radius: 2px; }
+        #progress-bar { position: relative; width: 100%; height: 4px; background-color: #404040; border-radius: 2px; cursor: pointer; }
+        #progress { position: absolute; top:0; left: 0; height: 100%; background-color: var(--color-text); border-radius: 2px; transform-origin: left; transform: scaleX(0); }
+        #progress-bar:hover #progress { background-color: var(--color-accent); }
 
-        /* --- 6. Contacto --- */
-        .social-icons {
-            display: flex;
-            justify-content: center;
-            gap: 25px;
-            margin-bottom: 40px;
-        }
+        /* --- 7. Redes & Contacto --- */
+        .social-icons { display: flex; justify-content: center; gap: 25px; margin-bottom: 40px; }
         .social-icons a { color: var(--color-subtle-text); text-decoration: none; transition: color 0.3s ease; }
         .social-icons a:hover { color: var(--color-text); }
         .social-icons svg { width: 28px; height: 28px; fill: currentColor; }
@@ -196,13 +254,26 @@
         .contact-btn {
             display: inline-block; background-color: var(--color-text); color: var(--color-background);
             padding: 12px 28px; font-size: 1.1rem; font-weight: 600; font-family: var(--font-body);
-            text-decoration: none; border-radius: 50px;
-            transition: transform 0.2s ease;
+            text-decoration: none; border-radius: 50px; transition: transform 0.2s ease;
         }
         .contact-btn:hover { transform: scale(1.05); }
 
-        /* --- 7. Footer --- */
+        /* --- 8. Footer --- */
         .footer { padding: 40px 20px; color: var(--color-subtle-text); font-size: 0.9rem; }
+
+        /* --- 9. Admin Panel (Simulado) --- */
+        #admin-panel {
+            display: none; /* Oculto por defecto */
+            background-color: #f0f2f5;
+            color: #1c1e21;
+            padding: 20px;
+            text-align: left;
+        }
+        .admin-container { max-width: 800px; margin: 20px auto; }
+        .admin-card { background: #fff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 20px; padding: 20px; }
+        .admin-card h3 { font-family: var(--font-body); margin-bottom: 15px; }
+        .admin-card textarea { width: 100%; min-height: 100px; padding: 8px; border: 1px solid #dddfe2; border-radius: 6px; }
+        .admin-card button { background-color: #1877f2; color: #fff; border: none; padding: 8px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; }
 
         /* --- Responsive Adjustments --- */
         @media (max-width: 768px) {
@@ -216,46 +287,45 @@
 </head>
 <body>
 
-    <!-- 1. ENCABEZADO Y VIDEO DE FONDO -->
-    <header class="hero-section">
-        <h1 class="hero-title">NUCK</h1>
-        <p class="hero-subtitle">new music</p>
-        <video autoplay muted loop playsinline class="hero-video-bg">
-            <source src="assets/videos/LOOP PANTALLA PRINCIPAL.mp4" type="video/mp4">
-        </video>
-    </header>
+    <main id="main-content">
+        <!-- 1. ENCABEZADO Y VIDEO HERO -->
+        <header class="hero-section">
+            <div class="hero-content">
+                <h1 class="hero-title">NUCK</h1>
+                <p class="hero-subtitle">new music</p>
+            </div>
+            <div class="hero-overlay"></div>
+            <video autoplay muted loop playsinline class="hero-video-bg" poster="data:image/gif;base64,R0lGODlhAQABAIAAAAUEBAAAACwAAAAAAQABAAACAkQBADs=">
+                <source src="assets/videos/LOOP PANTALLA PRINCIPAL.mp4" type="video/mp4">
+            </video>
+        </header>
 
-    <main>
-        <!-- 2. CARRUSEL DE IMÁGENES Y CLIPS -->
-        <section class="section-container carousel">
-            <div id="carousel" class="carousel-container">
-                <!--
-                ======================================================
-                INSTRUCCIÓN: Agrega aquí nuevos items para el carrusel.
-                - Para una imagen, usa: <img class="carousel-item" src="assets/carrusel/NOMBRE.jpg">
-                - Para un clip, usa: <video class="carousel-item" autoplay muted loop playsinline><source src="..."></video>
-                ======================================================
-                -->
-                <img class="carousel-item active" src="assets/carrusel/DSCF9176.jpg" alt="Visual 1">
-                <video class="carousel-item" autoplay muted loop playsinline>
-                    <source src="assets/carrusel/clip 1.mp4" type="video/mp4">
-                </video>
-                <img class="carousel-item" src="assets/carrusel/DSCF9177.jpg" alt="Visual 2">
-                <video class="carousel-item" autoplay muted loop playsinline>
-                    <source src="assets/carrusel/clip 2.mp4" type="video/mp4">
-                </video>
+        <!-- 2. TEXTO DESCRIPTIVO -->
+        <section class="description-block">
+             <p class="description-text">
+                <!-- EDITAR TEXTO DESCRIPTIVO AQUÍ -->
+                Una estética digital cruda que define un universo propio dentro de la nueva ola underground.
+             </p>
+        </section>
+
+        <!-- 3. CARRUSEL -->
+        <section class="section-container carousel-section">
+            <div class="carousel">
+                <div class="carousel-track">
+                    <!-- Los items del carrusel se insertarán aquí con JS -->
+                </div>
+                <div class="carousel-nav">
+                    <button id="carousel-prev" aria-label="Anterior">‹</button>
+                    <button id="carousel-next" aria-label="Siguiente">›</button>
+                </div>
             </div>
         </section>
 
-        <!-- 3. BIOGRAFÍA -->
+        <!-- 4. BIOGRAFÍA -->
         <section class="section-container bio">
             <h2 class="section-title">BIO</h2>
-             <!--
-            ======================================================
-            INSTRUCCIÓN: Edita el texto de la biografía aquí.
-            ======================================================
-            -->
-            <p class="bio-text">
+            <p class="bio-text" id="bio-text-display">
+                <!-- EDITAR BIO AQUÍ -->
 Nuck es un artista y productor argentino oriundo de Buenos Aires.
 Su sonido se mueve entre trap rage, plugg y cloud rap / sad rap,
 combinando la intensidad del trap más agresivo con atmósferas melancólicas y espaciales.
@@ -263,30 +333,32 @@ Entre ritmos intensos, atmósferas melancólicas y una estética digital cruda, 
             </p>
         </section>
 
-        <!-- 4. VIDEO VANKIFF -->
+        <!-- 5. VIDEO VANKIFF -->
         <section class="section-container vankiff">
             <video controls loop muted autoplay playsinline class="vankiff-video">
                 <source src="assets/videos/VANKIFF FINAL.mp4" type="video/mp4">
             </video>
         </section>
         
-        <!-- 5. BIBLIOTECA DE MÚSICA -->
+        <!-- 6. BIBLIOTECA DE MÚSICA -->
         <section class="section-container music-library">
             <h2 class="section-title">BIBLIOTECA</h2>
             <div class="music-player">
                 <ul id="track-list-container" class="track-list"></ul>
                 <div class="player-controls">
-                    <button id="play-pause-btn">▶</button>
+                    <button id="play-pause-btn" aria-label="Reproducir/Pausar">▶</button>
                     <div class="progress-container">
                         <span id="current-time">0:00</span>
-                        <div id="progress-bar"><div id="progress"></div></div>
+                        <div id="progress-bar" role="slider" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-valuetext="Progreso de la canción">
+                            <div id="progress"></div>
+                        </div>
                         <span id="total-time">0:00</span>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- 6. CONTACTO -->
+        <!-- 7. CONTACTO Y REDES -->
         <section class="section-container contact">
             <h2 class="section-title">CONTACTO</h2>
             <div class="social-icons">
@@ -296,122 +368,194 @@ Entre ritmos intensos, atmósferas melancólicas y una estética digital cruda, 
                 <a href="https://soundcloud.com/nuck_00" target="_blank" aria-label="SoundCloud"><svg viewBox="0 0 24 24"><path d="M7,3H17C18.11,3 19,3.9 19,5V19C19,20.11 18.11,21 17,21H7C5.89,21 5,20.11 5,19V5C5,3.9 5.89,3 7,3M8,6V18H9.5V6H8M11,6V18H12.5V6H11M14,6V13H15.5V6H14Z"/></svg></a>
                 <a href="https://www.youtube.com/@nuck_00" target="_blank" aria-label="YouTube"><svg viewBox="0 0 24 24"><path d="M10,15L15.19,12L10,9V15M21.56,7.17C21.69,7.64 21.78,8.27 21.84,9.07C21.91,9.87 21.94,10.56 21.94,11.16L22,12C22,14.19 21.84,15.8 21.56,16.83C21.31,17.73 20.73,18.31 19.83,18.56C19.36,18.69 18.73,18.78 17.93,18.84C17.13,18.91 16.44,18.94 15.84,18.94L15,19C12.81,19 11.2,18.84 10.17,18.56C9.27,18.31 8.69,17.73 8.44,16.83C8.31,16.36 8.22,15.73 8.16,14.93C8.09,14.13 8.06,13.44 8.06,12.84L8,12C8,9.81 8.16,8.2 8.44,7.17C8.69,6.27 9.27,5.69 10.17,5.44C11.2,5.16 12.81,5 15,5L15.84,5.06C16.44,5.06 17.13,5.09 17.93,5.16C18.73,5.22 19.36,5.31 19.83,5.44C20.73,5.69 21.31,6.27 21.56,7.17Z"/></svg></a>
             </div>
-            <!--
-            ======================================================
-            INSTRUCCIÓN: Edita el correo de contacto aquí.
-            ======================================================
-            -->
             <a href="mailto:nuckartist@gmail.com" class="contact-btn">Escribime</a>
         </section>
+
+        <!-- 8. FOOTER -->
+        <footer class="footer">
+            <p>&copy; 2025 - NUCK. All rights reserved.</p>
+        </footer>
     </main>
+    
+    <!-- 9. PANEL DE ADMINISTRADOR SIMULADO -->
+    <div id="admin-panel">
+         <div class="admin-container">
+            <h2 class="section-title">Panel de Administración</h2>
+            <div class="admin-card">
+                <h3>Editar Biografía</h3>
+                <textarea id="bio-editor"></textarea>
+                <button id="save-bio-btn">Guardar Cambios</button>
+            </div>
+            <div class="admin-card">
+                <h3>Gestionar Carrusel</h3>
+                <p>Simulación: Aquí podrías agregar o quitar items del carrusel.</p>
+                <button>Subir Nuevo Ítem</button>
+            </div>
+             <div class="admin-card">
+                <h3>Gestionar Canciones</h3>
+                <p>Simulación: Aquí podrías editar los metadatos de las canciones.</p>
+                <button>Agregar Canción</button>
+            </div>
+         </div>
+    </div>
 
-    <!-- 7. FOOTER -->
-    <footer class="footer">
-        <p>&copy; 2025 - NUCK. All rights reserved.</p>
-    </footer>
 
-    <!-- SCRIPT PARA CARRUSEL Y REPRODUCTOR -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // --- LÓGICA DEL CARRUSEL ---
-            const carousel = document.getElementById('carousel');
-            if (carousel) {
-                const items = carousel.querySelectorAll('.carousel-item');
-                let currentIndex = 0;
-                setInterval(() => {
-                    items[currentIndex].classList.remove('active');
-                    currentIndex = (currentIndex + 1) % items.length;
-                    items[currentIndex].classList.add('active');
-                }, 5000); // Cambia cada 5 segundos
-            }
+            
+            // --- CONFIGURACIÓN DE DATOS ---
+            
+            // <!-- AGREGAR NUEVOS ÍTEMS DE CARRUSEL AQUÍ -->
+            const CAROUSEL_ITEMS = [
+                { type: 'image', src: 'assets/carrusel/DSCF9176.jpg', alt: 'Visual 1' },
+                { type: 'video', src: 'assets/carrusel/clip 1.mp4' },
+                { type: 'image', src: 'assets/carrusel/DSCF9177.jpg', alt: 'Visual 2' },
+                { type: 'video', src: 'assets/carrusel/clip 2.mp4' }
+            ];
 
-            // --- LÓGICA DEL REPRODUCTOR DE MÚSICA ---
-            // <!--
-            // ======================================================
-            // INSTRUCCIÓN: Agrega o edita canciones aquí.
-            // - 'title': El texto que se mostrará en la lista.
-            // - 'file': La ruta exacta al archivo en /assets/audio/
-            // - 'id': Un nombre corto para el enlace de compartir.
-            // ======================================================
-            // -->
-            const tracks = [
+            // <!-- AGREGAR NUEVAS CANCIONES AQUÍ -->
+            const TRACKS = [
                 {
                     title: "NUCK. CHERKI. prod.BYTU",
-                    file: "assets/audio/NUCK. CHERKI. prod.BYTU.mp3",
-                    id: "cherki"
+                    file: "assets/audio/NUCK. CHERKI. prod.BYTU.mp3"
                 },
                 {
                     title: "NUCK. EN LLAMAS (ft. XYZ)",
-                    file: "assets/audio/NUCK. EN LLAMAS (ft. XYZ).mp3",
-                    id: "en-llamas"
+                    file: "assets/audio/NUCK. EN LLAMAS (ft. XYZ).mp3"
                 },
                  {
                     title: "NUCK. MODO DIABLO. prod.DALEPLAY",
-                    file: "assets/audio/NUCK. MODO DIABLO (prod. DALEPLAY).mp3",
-                    id: "modo-diablo"
+                    file: "assets/audio/NUCK. MODO DIABLO (prod. DALEPLAY).mp3"
                 }
             ];
 
+            // --- LÓGICA DE LA APLICACIÓN ---
+            
+            const slugify = (text) => text.toString().toLowerCase()
+                .replace(/\s+/g, '-')           // Replace spaces with -
+                .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
+                .replace(/\-\-+/g, '-')         // Replace multiple - with single -
+                .replace(/^-+/, '')             // Trim - from start of text
+                .replace(/-+$/, '');            // Trim - from end of text
+
+            // --- CARRUSEL ---
+            const carouselTrack = document.querySelector('.carousel-track');
+            const prevBtn = document.getElementById('carousel-prev');
+            const nextBtn = document.getElementById('carousel-next');
+            let currentIndex = 0;
+            let slideInterval;
+            
+            function createCarousel() {
+                CAROUSEL_ITEMS.forEach(item => {
+                    const itemEl = document.createElement('div');
+                    itemEl.className = 'carousel-item';
+                    if (item.type === 'image') {
+                        itemEl.innerHTML = `<img src="${item.src}" alt="${item.alt}" loading="lazy">`;
+                    } else {
+                        itemEl.innerHTML = `<video autoplay muted loop playsinline preload="metadata"><source src="${item.src}" type="video/mp4"></video>`;
+                    }
+                    carouselTrack.appendChild(itemEl);
+                });
+            }
+
+            function updateCarousel() {
+                carouselTrack.style.transform = `translateX(-${currentIndex * 100}%)`;
+            }
+            
+            const startSlideShow = () => slideInterval = setInterval(() => nextBtn.click(), 5000);
+            const stopSlideShow = () => clearInterval(slideInterval);
+
+            if (carouselTrack) {
+                createCarousel();
+                nextBtn.addEventListener('click', () => {
+                    currentIndex = (currentIndex + 1) % CAROUSEL_ITEMS.length;
+                    updateCarousel();
+                });
+                prevBtn.addEventListener('click', () => {
+                    currentIndex = (currentIndex - 1 + CAROUSEL_ITEMS.length) % CAROUSEL_ITEMS.length;
+                    updateCarousel();
+                });
+
+                carouselTrack.parentElement.addEventListener('mouseenter', stopSlideShow);
+                carouselTrack.parentElement.addEventListener('mouseleave', startSlideShow);
+                
+                // Swipe functionality
+                let touchStartX = 0;
+                carouselTrack.addEventListener('touchstart', e => { touchStartX = e.changedTouches[0].screenX; stopSlideShow(); });
+                carouselTrack.addEventListener('touchend', e => {
+                    let touchEndX = e.changedTouches[0].screenX;
+                    if (touchEndX < touchStartX - 50) nextBtn.click();
+                    if (touchEndX > touchStartX + 50) prevBtn.click();
+                    startSlideShow();
+                });
+                
+                startSlideShow();
+            }
+
+            // --- REPRODUCTOR DE MÚSICA ---
             const audio = new Audio();
             let currentTrackIndex = 0;
             let isPlaying = false;
+            let animationFrameId;
 
             const trackListContainer = document.getElementById('track-list-container');
             const playPauseBtn = document.getElementById('play-pause-btn');
-            const progressBar = document.getElementById('progress-bar');
+            const progressBarEl = document.getElementById('progress-bar');
             const progress = document.getElementById('progress');
             const currentTimeEl = document.getElementById('current-time');
             const totalTimeEl = document.getElementById('total-time');
 
             function loadTrack(index) {
                 currentTrackIndex = index;
-                audio.src = tracks[index].file;
+                audio.src = TRACKS[index].file;
                 updateTrackListUI();
             }
 
-            function playTrack() { isPlaying = true; audio.play(); playPauseBtn.textContent = '❚❚'; updateTrackListUI(); }
-            function pauseTrack() { isPlaying = false; audio.pause(); playPauseBtn.textContent = '▶'; updateTrackListUI(); }
+            const playTrack = () => { isPlaying = true; audio.play(); playPauseBtn.textContent = '❚❚'; playPauseBtn.setAttribute('aria-label', 'Pausar'); updateTrackListUI(); };
+            const pauseTrack = () => { isPlaying = false; audio.pause(); playPauseBtn.textContent = '▶'; playPauseBtn.setAttribute('aria-label', 'Reproducir'); updateTrackListUI(); };
             
             function updateTrackListUI() {
                 document.querySelectorAll('.track-item').forEach((item, index) => {
-                    const playIcon = item.querySelector('.play-icon');
                     item.classList.toggle('active', index === currentTrackIndex);
-                    if (index === currentTrackIndex) {
-                        playIcon.textContent = isPlaying ? '🎶' : '▶';
-                    } else {
-                        playIcon.textContent = '▶';
-                    }
+                    const playIcon = item.querySelector('.play-icon');
+                    if (index === currentTrackIndex) playIcon.textContent = isPlaying ? '🎶' : '▶';
+                    else playIcon.textContent = '▶';
                 });
             }
 
             function updateProgress() {
                 if (audio.duration) {
-                    progress.style.width = `${(audio.currentTime / audio.duration) * 100}%`;
+                    const progressPercent = audio.currentTime / audio.duration;
+                    progress.style.transform = `scaleX(${progressPercent})`;
+                    progressBarEl.setAttribute('aria-valuenow', Math.round(progressPercent * 100));
                     totalTimeEl.textContent = formatTime(audio.duration);
                     currentTimeEl.textContent = formatTime(audio.currentTime);
                 }
+                animationFrameId = requestAnimationFrame(updateProgress);
             }
 
             function setProgress(e) {
                 if (audio.duration) audio.currentTime = (e.offsetX / this.clientWidth) * audio.duration;
             }
 
-            function formatTime(seconds) {
+            const formatTime = (seconds) => {
                 const min = Math.floor(seconds / 60);
                 const sec = Math.floor(seconds % 60);
                 return `${min}:${sec < 10 ? '0' : ''}${sec}`;
             }
-
-            tracks.forEach((track, index) => {
+            
+            TRACKS.forEach((track, index) => {
+                const trackSlug = slugify(track.title);
                 const li = document.createElement('li');
                 li.className = 'track-item';
                 li.innerHTML = `
                     <span class="play-icon">▶</span>
                     <span class="track-title">${track.title}</span>
                     <div class="track-actions">
-                        <button class="favorite-btn" title="Favorito">♡</button>
-                        <button class="share-btn" title="Compartir">🔗</button>
+                        <button class="favorite-btn" data-slug="${trackSlug}" aria-label="Añadir a favoritos">♡</button>
+                        <button class="share-btn" data-slug="${trackSlug}" aria-label="Compartir canción">🔗</button>
                     </div>
+                    <span class="visually-hidden" id="play-count-${trackSlug}">Reproducciones: 0</span>
                 `;
                 trackListContainer.appendChild(li);
 
@@ -420,29 +564,91 @@ Entre ritmos intensos, atmósferas melancólicas y una estética digital cruda, 
                     if (currentTrackIndex === index && isPlaying) { pauseTrack(); } else { loadTrack(index); playTrack(); }
                 });
 
-                li.querySelector('.favorite-btn').addEventListener('click', (e) => {
+                // Favorite button logic
+                const favoriteBtn = li.querySelector('.favorite-btn');
+                const isFavorited = localStorage.getItem(`fav_${trackSlug}`) === 'true';
+                if (isFavorited) {
+                    favoriteBtn.classList.add('favorited');
+                    favoriteBtn.textContent = '♥';
+                    favoriteBtn.setAttribute('aria-label', 'Quitar de favoritos');
+                }
+                favoriteBtn.addEventListener('click', (e) => {
                     e.stopPropagation();
-                    e.target.classList.toggle('favorited');
-                    e.target.textContent = e.target.classList.contains('favorited') ? '♥' : '♡';
+                    const currentFavState = favoriteBtn.classList.toggle('favorited');
+                    localStorage.setItem(`fav_${trackSlug}`, currentFavState);
+                    favoriteBtn.textContent = currentFavState ? '♥' : '♡';
+                    favoriteBtn.setAttribute('aria-label', currentFavState ? 'Quitar de favoritos' : 'Añadir a favoritos');
                 });
                 
+                // Share button logic
                 li.querySelector('.share-btn').addEventListener('click', (e) => {
                     e.stopPropagation();
-                    const shareUrl = `${window.location.href.split('#')[0]}#${track.id}`;
-                    navigator.clipboard.writeText(shareUrl).then(() => alert(`Enlace copiado: ${shareUrl}`)).catch(err => console.error(err));
+                    const shareUrl = `${window.location.origin}${window.location.pathname}#track-${trackSlug}`;
+                    navigator.clipboard.writeText(shareUrl).then(() => {
+                        alert(`Enlace copiado: ${shareUrl}`);
+                        window.location.hash = `#track-${trackSlug}`;
+                    });
                 });
+                
+                // Update play count display from storage
+                const playCountEl = document.getElementById(`play-count-${trackSlug}`);
+                const playCount = parseInt(localStorage.getItem(`play_count_${trackSlug}`) || '0', 10);
+                playCountEl.textContent = `Reproducciones: ${playCount}`;
             });
 
             loadTrack(0);
-
             playPauseBtn.addEventListener('click', () => isPlaying ? pauseTrack() : playTrack());
-            audio.addEventListener('timeupdate', updateProgress);
+            audio.addEventListener('play', () => requestAnimationFrame(updateProgress));
+            audio.addEventListener('pause', () => cancelAnimationFrame(animationFrameId));
             audio.addEventListener('loadedmetadata', updateProgress);
-            progressBar.addEventListener('click', setProgress);
+            progressBarEl.addEventListener('click', setProgress);
             audio.addEventListener('ended', () => {
-                currentTrackIndex = (currentTrackIndex + 1) % tracks.length;
+                const trackSlug = slugify(TRACKS[currentTrackIndex].title);
+                let playCount = parseInt(localStorage.getItem(`play_count_${trackSlug}`) || '0', 10) + 1;
+                localStorage.setItem(`play_count_${trackSlug}`, playCount);
+                document.getElementById(`play-count-${trackSlug}`).textContent = `Reproducciones: ${playCount}`;
+
+                currentTrackIndex = (currentTrackIndex + 1) % TRACKS.length;
                 loadTrack(currentTrackIndex);
                 playTrack();
+            });
+            
+            // --- HASH ROUTING & ADMIN PANEL ---
+            const mainContent = document.getElementById('main-content');
+            const adminPanel = document.getElementById('admin-panel');
+            const bioDisplay = document.getElementById('bio-text-display');
+            const bioEditor = document.getElementById('bio-editor');
+            const saveBioBtn = document.getElementById('save-bio-btn');
+            
+            const showAdminPanel = () => { mainContent.style.display = 'none'; adminPanel.style.display = 'block'; };
+            const showMainContent = () => { mainContent.style.display = 'block'; adminPanel.style.display = 'none'; };
+
+            function checkHash() {
+                if(window.location.hash === '#/admin') {
+                    showAdminPanel();
+                    bioEditor.value = localStorage.getItem('bioText') || bioDisplay.innerText;
+                } else {
+                    showMainContent();
+                    bioDisplay.innerText = localStorage.getItem('bioText') || bioDisplay.innerText;
+                }
+            }
+            
+            saveBioBtn.addEventListener('click', () => {
+                localStorage.setItem('bioText', bioEditor.value);
+                alert('Biografía guardada (simulado). Refresca o vuelve a la página principal para ver el cambio.');
+            });
+
+            window.addEventListener('hashchange', checkHash);
+            checkHash(); // Initial check on load
+
+            // Keyboard shortcut for admin
+            let keySequence = [];
+            document.addEventListener('keydown', (e) => {
+                keySequence.push(e.key);
+                if (keySequence.length > 3) keySequence.shift();
+                if (keySequence.join('') === 'aaa') {
+                    window.location.hash = '#/admin';
+                }
             });
         });
     </script>
