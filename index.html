@@ -102,7 +102,7 @@
             z-index: 1;
             border-radius: 30px;
             overflow: hidden;
-            transform: scale(1.02); /* Evita bordes finos por el border-radius */
+            transform: scale(1.02);
         }
         
         .hero-video-bg {
@@ -262,6 +262,8 @@
             overflow: hidden;
             transition: max-height 0.5s ease-out;
             padding-left: 20px;
+            background-color: rgba(20, 20, 20, 0.5);
+            border-radius: 0 0 8px 8px;
         }
         
         .track-item { display: flex; align-items: center; padding: 12px 10px; cursor: pointer; border-bottom: 1px solid var(--color-outline); transition: background-color 0.2s ease; }
@@ -411,9 +413,6 @@ Entre ritmos intensos, atmósferas melancólicas y una estética digital cruda, 
                 "clip 2.mp4"
             ];
 
-            // <!-- CONFIGURAR RUTA DE AUDIO_LIBRARY_ROOT AQUÍ -->
-            const AUDIO_LIBRARY_ROOT = "assets/audio/";
-            
             // <!-- AGREGAR NUEVAS SUBCARPETAS Y CANCIONES AQUÍ -->
             const AUDIO_LIBRARY = {
                 "Albumes": [
@@ -441,7 +440,6 @@ Entre ritmos intensos, atmósferas melancólicas y una estética digital cruda, 
                 const nextBtn = document.getElementById('carousel-next');
                 let slideInterval;
 
-                // Randomize and Create Carousel
                 const randomizedItems = [...CAROUSEL_ITEMS].sort(() => Math.random() - 0.5);
                 randomizedItems.forEach(item => {
                     const itemEl = document.createElement('div');
@@ -456,17 +454,24 @@ Entre ritmos intensos, atmósferas melancólicas y una estética digital cruda, 
                     carouselTrackContainer.appendChild(itemEl);
                 });
 
-                const startSlideShow = () => slideInterval = setInterval(() => carouselTrackContainer.scrollBy({ left: carouselTrackContainer.clientWidth, behavior: 'smooth' }), 5000);
+                const startSlideShow = () => slideInterval = setInterval(() => {
+                    const maxScroll = carouselTrackContainer.scrollWidth - carouselTrackContainer.clientWidth;
+                    if (carouselTrackContainer.scrollLeft >= maxScroll - 1) {
+                         carouselTrackContainer.scrollTo({ left: 0, behavior: 'smooth' });
+                    } else {
+                        carouselTrackContainer.scrollBy({ left: carouselTrackContainer.clientWidth / 2, behavior: 'smooth' });
+                    }
+                }, 5000);
+
                 const stopSlideShow = () => clearInterval(slideInterval);
                 
-                nextBtn.addEventListener('click', () => carouselTrackContainer.scrollBy({ left: carouselTrackContainer.clientWidth, behavior: 'smooth' }));
-                prevBtn.addEventListener('click', () => carouselTrackContainer.scrollBy({ left: -carouselTrackContainer.clientWidth, behavior: 'smooth' }));
+                nextBtn.addEventListener('click', () => carouselTrackContainer.scrollBy({ left: carouselTrackContainer.clientWidth / 2, behavior: 'smooth' }));
+                prevBtn.addEventListener('click', () => carouselTrackContainer.scrollBy({ left: -carouselTrackContainer.clientWidth / 2, behavior: 'smooth' }));
                 
                 carouselTrackContainer.parentElement.addEventListener('mouseenter', stopSlideShow);
                 carouselTrackContainer.parentElement.addEventListener('mouseleave', startSlideShow);
                 startSlideShow();
 
-                // Intersection Observer for videos
                 const videoObserver = new IntersectionObserver((entries) => {
                     entries.forEach(entry => {
                         const video = entry.target;
@@ -518,7 +523,6 @@ Entre ritmos intensos, atmósferas melancólicas y una estética digital cruda, 
                 return `${min}:${sec < 10 ? '0' : ''}${sec}`;
             }
 
-            // Build library UI
             for (const [folder, files] of Object.entries(AUDIO_LIBRARY)) {
                 const albumGroup = document.createElement('div');
                 albumGroup.className = 'album-group';
@@ -529,7 +533,7 @@ Entre ritmos intensos, atmósferas melancólicas y una estética digital cruda, 
                 files.forEach(file => {
                     const title = file.replace(/\.mp3$/i, '');
                     const trackSlug = slugify(title);
-                    const trackPath = `${AUDIO_LIBRARY_ROOT}${folder}/${file}`;
+                    const trackPath = `assets/audio/${folder}/${file}`;
                     const li = document.createElement('li');
                     li.className = 'track-item';
                     li.dataset.src = trackPath;
