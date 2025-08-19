@@ -20,6 +20,7 @@
             --color-background: #000000;
             --color-surface: #121212;
             --color-outline: #2a2a2a;
+            --color-accent: #1DB954; /* Unused, but kept for consistency */
         }
 
         /* --- CSS Reset & Base Styles --- */
@@ -55,6 +56,17 @@
             margin-bottom: 50px;
             letter-spacing: 2px;
         }
+        
+        /* --- Accesibilidad y Utilidades --- */
+        .visually-hidden {
+            clip: rect(0 0 0 0);
+            clip-path: inset(50%);
+            height: 1px;
+            overflow: hidden;
+            position: absolute;
+            white-space: nowrap;
+            width: 1px;
+        }
 
         /* --- Portada (Hero) --- */
         .hero-section {
@@ -73,6 +85,9 @@
             top: 0; left: 0;
             width: 100%; height: 100%;
             z-index: 1;
+            border-radius: 30px;
+            overflow: hidden;
+            transform: scale(1.02);
         }
         
         .hero-video-bg {
@@ -86,6 +101,30 @@
             width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.6);
             z-index: 2;
+        }
+        
+        #play-overlay {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 4;
+            display: none; /* Hidden by default */
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        #play-overlay button {
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 2px solid white;
+            color: white;
+            font-size: 1.5rem;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            cursor: pointer;
+            backdrop-filter: blur(5px);
         }
 
         .hero-content {
@@ -115,142 +154,152 @@
         .carousel-section {
             position: relative;
             overflow: hidden;
+            padding: 80px 0;
         }
-
         .carousel-container {
             position: relative;
             width: 100%;
-            max-width: 900px;
-            margin: 0 auto;
-            aspect-ratio: 16 / 10;
-            background-color: #111;
+            overflow: hidden;
+        }
+        .carousel-track-container {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            padding: 0 20px;
+            gap: 20px;
+        }
+        .carousel-track-container::-webkit-scrollbar { display: none; }
+        
+        .carousel-item {
+            flex: 0 0 80%;
+            width: 80%;
+            scroll-snap-align: center;
             border-radius: 12px;
             overflow: hidden;
+            background-color: #111;
+            aspect-ratio: 16 / 10;
         }
-
-        .carousel-item {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            transition: opacity 1.5s ease-in-out;
+        
+        @media (min-width: 768px) {
+            .carousel-item { flex-basis: 45%; width: 45%; }
         }
-
-        .carousel-item.active {
-            opacity: 1;
+        @media (min-width: 1024px) {
+            .carousel-item { flex-basis: 30%; width: 30%; }
         }
-
+        
         .carousel-item img,
         .carousel-item video {
-            width: 100%;
-            height: 100%;
+            width: 100%; height: 100%;
             object-fit: cover;
+            pointer-events: none;
+            transition: transform 0.4s ease;
         }
-
-        /* --- BIO --- */
-        .bio-text {
-            font-size: 1.1rem;
-            line-height: 1.8;
-            max-width: 700px;
-            margin: 0 auto;
-            white-space: pre-line;
-        }
-        
-        /* --- VANKIFF Video Separator --- */
-        .vankiff-video-wrapper {
-            max-width: 1200px;
-            margin: 0 auto;
-            border-radius: 30px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-        .vankiff-video {
-            width: 100%;
-            display: block;
-        }
-        
-        /* --- Biblioteca de Música --- */
-        .music-library {
-            max-width: 800px;
-            margin: 0 auto;
-            text-align: left;
-        }
-        .album-group {
-            margin-bottom: 40px;
-        }
-        .album-title {
-            font-family: var(--font-title);
-            font-size: 1.8rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 20px;
-            border-bottom: 1px solid var(--color-outline);
-            padding-bottom: 10px;
-        }
-        .track-item {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            margin-bottom: 25px;
-            background-color: var(--color-surface);
-            padding: 15px;
-            border-radius: 8px;
-        }
-        .track-title {
-            font-weight: 600;
-            margin-bottom: 10px;
-        }
-        .track-item audio {
-            width: 100%;
-        }
-        
-        /* --- Contacto y Redes --- */
-        .social-icons {
-            display: flex;
-            justify-content: center;
-            gap: 25px;
-            margin-bottom: 40px;
-        }
-        .social-icons a {
-            color: var(--color-subtle-text);
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-        .social-icons a:hover {
-            color: var(--color-text);
-        }
-        .social-icons svg {
-            width: 28px;
-            height: 28px;
-            fill: currentColor;
-        }
-        .contact-btn {
-            display: inline-block;
-            background-color: var(--color-text);
-            color: var(--color-background);
-            padding: 12px 28px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            text-decoration: none;
-            border-radius: 50px;
-            transition: transform 0.2s ease;
-        }
-        .contact-btn:hover {
+        .carousel-item:hover img, .carousel-item:hover video {
             transform: scale(1.05);
         }
 
-        /* --- Footer --- */
-        .footer {
-            padding: 40px 20px;
-            color: var(--color-subtle-text);
-            font-size: 0.9rem;
+        .carousel-nav { display: none; }
+
+        @media (min-width: 1024px) {
+            .carousel-nav {
+                display: flex;
+                justify-content: space-between;
+                position: absolute;
+                top: 50%;
+                transform: translateY(-50%);
+                width: 100%;
+                padding: 0 40px;
+                pointer-events: none;
+            }
+        
+            .carousel-nav button {
+                pointer-events: all;
+                background: rgba(0,0,0,0.5); border: 1px solid var(--color-outline);
+                color: white; border-radius: 50%;
+                width: 45px; height: 45px;
+                font-size: 1.8rem; cursor: pointer; transition: background-color 0.2s;
+            }
+            .carousel-nav button:hover { background-color: rgba(0,0,0,0.8); }
         }
+        
+        /* --- BIO --- */
+        .bio-text { font-size: 1.1rem; line-height: 1.8; max-width: 700px; margin: 0 auto; white-space: pre-line; }
+        
+        /* --- VANKIFF Video --- */
+        .vankiff-video-wrapper {
+            border-radius: 30px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .vankiff-video { width: 100%; display: block; pointer-events: none; }
+        
+        /* --- Biblioteca de Música --- */
+        .music-library { max-width: 800px; margin: 0 auto; }
+        .album-group { margin-bottom: 20px; }
+        .album-header {
+            background-color: var(--color-surface);
+            padding: 15px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-align: left;
+            border: 1px solid var(--color-outline);
+        }
+        .album-header h3 { font-family: var(--font-body); font-size: 1.2rem; }
+        .album-toggle { transition: transform 0.3s ease; }
+        .album-header[aria-expanded="true"] .album-toggle { transform: rotate(90deg); }
+        
+        .track-list {
+            list-style: none;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out;
+            padding-left: 20px;
+            background-color: rgba(20, 20, 20, 0.5);
+            border-radius: 0 0 8px 8px;
+        }
+        
+        .track-item { display: flex; align-items: center; padding: 12px 10px; cursor: pointer; border-bottom: 1px solid var(--color-outline); transition: background-color 0.2s ease; }
+        .track-item:last-child { border-bottom: none; }
+        .track-item:hover, .track-item.active { background-color: #282828; }
+        .track-item .play-icon { font-size: 1.5rem; margin-right: 15px; width: 20px; text-align: center; background: none; border: none; color: var(--color-text); cursor: pointer; }
+        .track-item.active .play-icon { color: var(--color-accent); }
+        .track-title { flex-grow: 1; font-weight: 600; text-align: left; pointer-events: none; }
+        
+        .track-actions { display: flex; align-items: center; gap: 15px; }
+        .track-actions button { background: none; border: none; color: var(--color-subtle-text); font-size: 1.2rem; cursor: pointer; transition: color 0.2s ease; }
+        .track-actions button:hover { color: var(--color-text); }
+        .track-actions .favorite-btn.favorited { color: var(--color-accent); }
+
+        .player-controls { display: flex; align-items: center; gap: 15px; padding: 15px; background-color: var(--color-surface); border-radius: 10px; margin-top: 30px; }
+        #player-play-pause-btn { background: none; border: none; color: var(--color-text); font-size: 2rem; cursor: pointer; line-height: 1; }
+        .progress-container { flex-grow: 1; display: flex; align-items: center; gap: 10px; }
+        #current-time, #total-time { font-size: 0.8rem; color: var(--color-subtle-text); min-width: 40px; }
+        #progress-bar { position: relative; width: 100%; height: 4px; background-color: #404040; border-radius: 2px; cursor: pointer; }
+        #progress { position: absolute; top:0; left: 0; height: 100%; background-color: var(--color-text); border-radius: 2px; transform-origin: left; transform: scaleX(0); }
+        #progress-bar:hover #progress { background-color: var(--color-accent); }
+        
+        /* --- Contacto y Redes --- */
+        .social-icons { display: flex; justify-content: center; gap: 25px; margin-bottom: 40px; }
+        .social-icons a { color: var(--color-subtle-text); text-decoration: none; transition: color 0.3s ease; }
+        .social-icons a:hover { color: var(--color-text); }
+        .social-icons svg { width: 28px; height: 28px; fill: currentColor; }
+        .contact-btn { display: inline-block; background-color: var(--color-text); color: var(--color-background); padding: 12px 28px; font-size: 1.1rem; font-weight: 600; font-family: var(--font-body); text-decoration: none; border-radius: 50px; transition: transform 0.2s ease; }
+        .contact-btn:hover { transform: scale(1.05); }
+
+        /* --- Footer --- */
+        .footer { padding: 40px 20px; color: var(--color-subtle-text); font-size: 0.9rem; }
+        
     </style>
 </head>
 <body>
-    <main>
+    <main id="main-content">
         <!-- PORTADA -->
         <header class="hero-section">
             <div class="hero-content">
@@ -263,12 +312,21 @@
                     <source src="assets/videos/LOOP PANTALLA PRINCIPAL.mp4" type="video/mp4">
                 </video>
             </div>
+            <div id="play-overlay">
+                <button id="play-button" aria-label="Reproducir video">▶</button>
+            </div>
         </header>
 
         <!-- CARRUSEL -->
         <section class="section-container carousel-section">
-            <div id="carousel-container" class="carousel-container">
-                <!-- Los items se insertan aquí con JS -->
+            <div class="carousel">
+                <div class="carousel-track-container">
+                    <!-- Los items se insertan aquí con JS -->
+                </div>
+                <div class="carousel-nav">
+                    <button id="carousel-prev" aria-label="Anterior" role="button">‹</button>
+                    <button id="carousel-next" aria-label="Siguiente" role="button">›</button>
+                </div>
             </div>
         </section>
 
@@ -276,6 +334,7 @@
         <section class="section-container bio">
             <h2 class="section-title">BIO</h2>
             <p class="bio-text">
+                <!-- EDITAR BIO AQUÍ -->
 Nuck es un artista y productor argentino oriundo de Buenos Aires.
 Su sonido se mueve entre trap rage, plugg y cloud rap / sad rap,
 combinando la intensidad del trap más agresivo con atmósferas melancólicas y espaciales.
@@ -286,7 +345,7 @@ Entre ritmos intensos, atmósferas melancólicas y una estética digital cruda, 
         <!-- VIDEO "VANKIFF FINAL" -->
         <section class="section-container vankiff">
             <div class="vankiff-video-wrapper">
-                <video loop muted autoplay playsinline class="vankiff-video" style="pointer-events: none;">
+                <video loop muted autoplay playsinline class="vankiff-video">
                     <source src="assets/videos/VANKIFF FINAL.mp4" type="video/mp4">
                 </video>
             </div>
@@ -296,7 +355,17 @@ Entre ritmos intensos, atmósferas melancólicas y una estética digital cruda, 
         <section class="section-container music-library">
             <h2 class="section-title">BIBLIOTECA</h2>
             <div id="library-container">
-                <!-- Las subcarpetas y tracks se insertan aquí con JS -->
+                <!-- Las subcarpetas se insertan aquí con JS -->
+            </div>
+            <div class="player-controls">
+                <button id="player-play-pause-btn" aria-label="Reproducir" role="button">▶</button>
+                <div class="progress-container">
+                    <span id="current-time">0:00</span>
+                    <div id="progress-bar" role="slider" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-valuetext="Progreso">
+                        <div id="progress"></div>
+                    </div>
+                    <span id="total-time">0:00</span>
+                </div>
             </div>
         </section>
 
@@ -324,7 +393,7 @@ Entre ritmos intensos, atmósferas melancólicas y una estética digital cruda, 
             
             // --- CONFIGURACIÓN DE DATOS ---
             
-            const carruselItems = [
+            const CAROUSEL_ITEMS = [
               { type: "image", src: "assets/carrusel/imagen1.jpg" },
               { type: "image", src: "assets/carrusel/imagen2.jpg" },
               { type: "image", src: "assets/carrusel/imagen3.jpg" },
@@ -338,97 +407,209 @@ Entre ritmos intensos, atmósferas melancólicas y una estética digital cruda, 
               { type: "image", src: "assets/carrusel/imagen11.jpg" },
               { type: "image", src: "assets/carrusel/imagen12.jpg" },
               { type: "image", src: "assets/carrusel/imagen13.jpg" },
-              { type: "video", src: "assets/carrusel/clip1.mp4" },
-              { type: "video", src: "assets/carrusel/clip2.mp4" },
-              { type: "video", src: "assets/carrusel/clip3.mp4" },
-              { type: "video", src: "assets/carrusel/clip4.mp4" },
-              { type: "video", src: "assets/carrusel/clip5.mp4" },
-              { type: "video", src: "assets/carrusel/clip6.mp4" },
-              { type: "video", src: "assets/carrusel/clip7.mp4" },
+              { type: "video", src: "assets/carrusel/clip 1.mp4" },
+              { type: "video", src: "assets/carrusel/clip 2.mp4" },
+              { type: "video", src: "assets/carrusel/clip 3.mp4" },
+              { type: "video", src: "assets/carrusel/clip 4.mp4" },
+              { type: "video", src: "assets/carrusel/clip 6.mp4" },
+              { type: "video", src: "assets/carrusel/clip 7.mp4" },
             ];
 
-            const audioLibrary = [
-              {
-                album: "EP SC",
-                tracks: [
-                  { title: "Track 1", src: "assets/audio/EP SC/track1.mp3" },
-                  { title: "Track 2", src: "assets/audio/EP SC/track2.mp3" },
+            const AUDIO_LIBRARY_ROOT = 'assets/audio';
+            const AUDIO_LIBRARY = {
+                "EP SC": [
+                    { title: "NUCK. CHERKI. prod.BYTU.mp3", src: "NUCK. CHERKI. prod.BYTU.mp3" },
+                    { title: "NUCK. EN LLAMAS (ft. XYZ).mp3", src: "NUCK. EN LLAMAS (ft. XYZ).mp3" }
                 ],
-              },
-              {
-                album: "INVIERNO",
-                tracks: [
-                  { title: "Track 1", src: "assets/audio/INVIERNO/track1.mp3" },
-                  { title: "Track 2", src: "assets/audio/INVIERNO/track2.mp3" },
-                ],
-              },
-            ];
-
+                "INVIERNO": []
+            };
 
             // --- LÓGICA DE LA APLICACIÓN ---
 
+            // Portada Video Autoplay
+            const heroVideo = document.querySelector('.hero-video-bg');
+            const playOverlay = document.getElementById('play-overlay');
+            if (heroVideo) {
+                heroVideo.play().catch(() => {
+                    playOverlay.style.display = 'flex';
+                });
+                playOverlay.addEventListener('click', () => {
+                    heroVideo.play();
+                    playOverlay.style.display = 'none';
+                }, { once: true });
+            }
+
+            const slugify = (text) => text.toString().toLowerCase()
+                .replace(/\s+/g, '-').replace(/[^\w\-]+/g, '')
+                .replace(/\-\-+/g, '-').replace(/^-+/, '').replace(/-+$/, '');
+
             // Carrusel
-            const carouselContainer = document.getElementById('carousel-container');
-            if (carouselContainer) {
-                let currentIndex = 0;
-                
-                carruselItems.forEach((item, index) => {
+            const carouselTrackContainer = document.querySelector('.carousel-track-container');
+            if (carouselTrackContainer) {
+                const prevBtn = document.getElementById('carousel-prev');
+                const nextBtn = document.getElementById('carousel-next');
+                let slideInterval;
+                let items = [];
+
+                const sanitizedItems = CAROUSEL_ITEMS.filter(item => item.src !== "assets/carrusel/clip5.mp4");
+
+                sanitizedItems.forEach(itemData => {
                     const itemEl = document.createElement('div');
                     itemEl.className = 'carousel-item';
-                    if(index === 0) itemEl.classList.add('active');
-
-                    if (item.type === 'image') {
-                        itemEl.innerHTML = `<img src="${item.src}" alt="">`;
+                    let mediaEl;
+                    if (itemData.type === 'image') {
+                        mediaEl = document.createElement('img');
+                        mediaEl.loading = 'lazy';
                     } else {
-                        itemEl.innerHTML = `<video autoplay muted loop playsinline style="pointer-events: none;"><source src="${item.src}" type="video/mp4" /></video>`;
+                        mediaEl = document.createElement('video');
+                        mediaEl.autoplay = true;
+                        mediaEl.muted = true;
+                        mediaEl.loop = true;
+                        mediaEl.playsInline = true;
+                        mediaEl.dataset.observable = true;
                     }
-                    carouselContainer.appendChild(itemEl);
-                });
-                
-                const items = carouselContainer.querySelectorAll('.carousel-item');
-                setInterval(() => {
-                    items[currentIndex].classList.remove('active');
-                    currentIndex = (currentIndex + 1) % items.length;
-                    items[currentIndex].classList.add('active');
-                }, 5000);
-            }
+                    mediaEl.src = itemData.src;
+                    
+                    mediaEl.onerror = () => {
+                        console.warn(`Failed to load carousel item: ${itemData.src}`);
+                        itemEl.remove(); // Remove item if it fails to load
+                        items = Array.from(carouselTrackContainer.children); // Update items array
+                    };
 
+                    itemEl.appendChild(mediaEl);
+                    carouselTrackContainer.appendChild(itemEl);
+                });
+                items = Array.from(carouselTrackContainer.children);
+
+                const advanceCarousel = () => {
+                    const itemWidth = items[0].offsetWidth + 20;
+                    const maxScroll = carouselTrackContainer.scrollWidth - carouselTrackContainer.clientWidth;
+                    if (carouselTrackContainer.scrollLeft >= maxScroll - 5) { // Tolerance
+                         carouselTrackContainer.scrollTo({ left: 0, behavior: 'smooth' });
+                    } else {
+                        carouselTrackContainer.scrollBy({ left: itemWidth, behavior: 'smooth' });
+                    }
+                };
+                
+                const startSlideShow = () => slideInterval = setInterval(advanceCarousel, 5000);
+                const stopSlideShow = () => clearInterval(slideInterval);
+                
+                nextBtn.addEventListener('click', () => carouselTrackContainer.scrollBy({ left: items[0].offsetWidth + 20, behavior: 'smooth' }));
+                prevBtn.addEventListener('click', () => carouselTrackContainer.scrollBy({ left: -(items[0].offsetWidth + 20), behavior: 'smooth' }));
+                
+                carouselTrackContainer.parentElement.addEventListener('mouseenter', stopSlideShow);
+                carouselTrackContainer.parentElement.addEventListener('mouseleave', startSlideShow);
+                startSlideShow();
+
+                const videoObserver = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        const video = entry.target;
+                        if (entry.isIntersecting) video.play().catch(()=>{});
+                        else video.pause();
+                    });
+                }, { threshold: 0.5 });
+                
+                document.querySelectorAll('video[data-observable]').forEach(video => videoObserver.observe(video));
+            }
 
             // Biblioteca de Música
+            const audio = new Audio();
+            let currentTrack = null;
+            let isPlaying = false;
+            let animationFrameId;
+
             const libraryContainer = document.getElementById('library-container');
-            if(libraryContainer) {
-                audioLibrary.forEach(albumData => {
-                    const albumEl = document.createElement('div');
-                    albumEl.className = 'album-group';
-                    
-                    const albumTitle = document.createElement('h3');
-                    albumTitle.className = 'album-title';
-                    albumTitle.textContent = albumData.album;
-                    albumEl.appendChild(albumTitle);
+            const playerPlayPauseBtn = document.getElementById('player-play-pause-btn');
+            const progressBarEl = document.getElementById('progress-bar');
+            const progress = document.getElementById('progress');
+            const currentTimeEl = document.getElementById('current-time');
+            const totalTimeEl = document.getElementById('total-time');
 
-                    albumData.tracks.forEach(trackData => {
-                        const trackEl = document.createElement('div');
-                        trackEl.className = 'track-item';
-                        
-                        const trackTitle = document.createElement('p');
-                        trackTitle.className = 'track-title';
-                        trackTitle.textContent = trackData.title;
-                        trackEl.appendChild(trackTitle);
-
-                        const audioEl = document.createElement('audio');
-                        audioEl.controls = true;
-                        const sourceEl = document.createElement('source');
-                        sourceEl.src = trackData.src;
-                        sourceEl.type = 'audio/mpeg';
-                        audioEl.appendChild(sourceEl);
-                        trackEl.appendChild(audioEl);
-
-                        albumEl.appendChild(trackEl);
-                    });
-                    
-                    libraryContainer.appendChild(albumEl);
+            function loadTrack(trackInfo) { currentTrack = trackInfo; audio.src = trackInfo.file; updateAllTrackUIs(); }
+            const playTrack = () => { 
+                isPlaying = true; 
+                audio.play(); 
+                playerPlayPauseBtn.textContent = '❚❚'; 
+                updateAllTrackUIs();
+                const trackSlug = slugify(currentTrack.title);
+                let playCount = (parseInt(localStorage.getItem(`play_count_${trackSlug}`) || '0', 10) + 1);
+                localStorage.setItem(`play_count_${trackSlug}`, playCount);
+                document.getElementById(`play-count-${trackSlug}`).textContent = `Reproducciones: ${playCount}`;
+            }
+            const pauseTrack = () => { isPlaying = false; audio.pause(); playerPlayPauseBtn.textContent = '▶'; updateAllTrackUIs(); }
+            
+            function updateAllTrackUIs() {
+                document.querySelectorAll('.track-item').forEach(item => {
+                    const isActive = item.dataset.src === currentTrack?.file;
+                    item.classList.toggle('active', isActive);
+                    item.querySelector('.play-icon').textContent = (isActive && isPlaying) ? '❚❚' : '▶';
                 });
             }
+            
+            function updateProgress() {
+                if (audio.duration && isPlaying) {
+                    progress.style.transform = `scaleX(${audio.currentTime / audio.duration})`;
+                    totalTimeEl.textContent = formatTime(audio.duration);
+                    currentTimeEl.textContent = formatTime(audio.currentTime);
+                }
+                animationFrameId = requestAnimationFrame(updateProgress);
+            }
+
+            const formatTime = (seconds) => {
+                if (isNaN(seconds)) return "0:00";
+                const min = Math.floor(seconds / 60);
+                const sec = Math.floor(seconds % 60);
+                return `${min}:${sec < 10 ? '0' : ''}${sec}`;
+            }
+
+            for (const [folder, tracks] of Object.entries(AUDIO_LIBRARY)) {
+                if (tracks.length === 0) continue;
+                const albumGroup = document.createElement('div');
+                albumGroup.className = 'album-group';
+                const folderSlug = slugify(folder);
+                albumGroup.innerHTML = `<div class="album-header" role="button" aria-expanded="false" aria-controls="album-${folderSlug}"><h3>${folder}</h3><span class="album-toggle">›</span></div><ul class="track-list" id="album-${folderSlug}"></ul>`;
+                
+                const trackListEl = albumGroup.querySelector('.track-list');
+                tracks.forEach(track => {
+                    const title = track.title.replace(/\.mp3$/i, '');
+                    const trackSlug = slugify(title);
+                    const trackPath = `${AUDIO_LIBRARY_ROOT}/${encodeURIComponent(folder)}/${encodeURIComponent(track.src)}`;
+                    const li = document.createElement('li');
+                    li.className = 'track-item';
+                    li.dataset.src = trackPath;
+                    li.innerHTML = `<button class="play-icon" aria-label="Reproducir ${title}">▶</button><span class="track-title">${title}</span><div class="track-actions"><button class="favorite-btn" data-slug="${trackSlug}">♡</button><button class="share-btn" data-slug="${trackSlug}">🔗</button></div><span class="visually-hidden" id="play-count-${trackSlug}"></span>`;
+                    trackListEl.appendChild(li);
+
+                    li.querySelector('.play-icon').addEventListener('click', () => {
+                        const trackInfo = { file: trackPath, title: title };
+                        if (currentTrack?.file === trackPath && isPlaying) { pauseTrack(); } 
+                        else { loadTrack(trackInfo); playTrack(); }
+                    });
+
+                    const favoriteBtn = li.querySelector('.favorite-btn');
+                    if (localStorage.getItem(`fav_${trackSlug}`) === 'true') { favoriteBtn.classList.add('favorited'); favoriteBtn.textContent = '♥'; }
+                    favoriteBtn.addEventListener('click', (e) => { e.stopPropagation(); const favState = favoriteBtn.classList.toggle('favorited'); localStorage.setItem(`fav_${trackSlug}`, favState); favoriteBtn.textContent = favState ? '♥' : '♡'; });
+                    
+                    li.querySelector('.share-btn').addEventListener('click', (e) => { e.stopPropagation(); const shareUrl = `${window.location.origin}${window.location.pathname}#track-${trackSlug}`; navigator.clipboard.writeText(shareUrl).then(() => { alert(`Enlace copiado: ${shareUrl}`); window.location.hash = `#track-${trackSlug}`; }); });
+                    
+                    document.getElementById(`play-count-${trackSlug}`).textContent = `Reproducciones: ${localStorage.getItem(`play_count_${trackSlug}`) || '0'}`;
+                });
+                
+                libraryContainer.appendChild(albumGroup);
+                
+                albumGroup.querySelector('.album-header').addEventListener('click', function() {
+                    const isExpanded = this.getAttribute('aria-expanded') === 'true';
+                    this.setAttribute('aria-expanded', !isExpanded);
+                    const trackList = this.nextElementSibling;
+                    trackList.style.maxHeight = isExpanded ? null : trackList.scrollHeight + 'px';
+                });
+            }
+
+            playerPlayPauseBtn.addEventListener('click', () => { if (currentTrack) isPlaying ? pauseTrack() : playTrack(); });
+            audio.addEventListener('play', () => requestAnimationFrame(updateProgress));
+            audio.addEventListener('pause', () => cancelAnimationFrame(animationFrameId));
+            progressBarEl.addEventListener('click', function(e) { if(audio.duration) audio.currentTime = (e.offsetX / this.clientWidth) * audio.duration; });
+            
         });
     </script>
 </body>
